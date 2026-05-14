@@ -1,0 +1,695 @@
+﻿\documentclass[12pt,a4paper,oneside]{ctexbook}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{left=2.5cm,right=2.5cm,top=3cm,bottom=3cm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+
+\lstset{
+    basicstyle=\small\ttfamily,
+    numbers=left,
+    numberstyle=\tiny,
+    frame=single,
+    breaklines=true,
+    backgroundcolor=\color{gray!5},
+    tabsize=4
+}
+
+\setlength{\parindent}{2em}
+\setstretch{1.3}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\leftmark}
+\fancyfoot[C]{\thepage}
+
+\hypersetup{colorlinks=true, linkcolor=black}
+
+\begin{document}
+
+\title{Modular Yielding Graphical Operators \\ MYGO-DSP \\ 数字信号处理与滤波器设计平台}
+\author{}
+\date{版本 2.0 -- 2026年5月}
+\maketitle
+\thispagestyle{empty}
+
+\frontmatter
+\tableofcontents
+
+\mainmatter
+
+\chapter{项目概述}
+
+\section{什么是 MYGO-DSP?}
+
+MYGO-DSP 是一个企业级数字信号处理与滤波器设计平台，基于 C++17 实现高性能 DSP 核心引擎，通过 Electron + React 构建跨平台桌面应用界面。项目名称 M.Y.G.O 代表 Modular Yielding Graphical Operators（模块化生成图形算子），体现了将信号处理单元模块化为可组合算子、通过图形界面进行实时控制和可视化的核心理念。
+
+\section{数字信号处理基础}
+
+数字信号处理（Digital Signal Processing, DSP）是现代电子技术的核心之一。在数字世界中，连续信号被离散化为一系列采样点。一个离散时间信号可以表示为 \(x[n]\)，其中 \(n\) 是整数索引（第 \(n\) 个采样点）。
+
+正弦波信号可以写成:
+
+\[
+x[n] = A \cdot \sin(2\pi f n / f_s + \phi)
+\]
+
+其中 \(A\) 是幅度, \(f\) 是频率（单位 Hz）, \(f_s\) 是采样率（每秒采样数）, \(\phi\) 是初始相位。
+
+采样定理（Nyquist-Shannon 定理）指出: 要从采样信号中无失真地重建原始连续信号, 采样率必须至少为信号最高频率的两倍:
+
+\[
+f_s \geq 2 f_{\max}
+\]
+
+傅里叶变换是 DSP 中最核心的数学工具。它将时域信号变换到频域, 揭示信号包含哪些频率成分。离散傅里叶变换（DFT）定义为:
+
+\[
+X[k] = \sum_{n=0}^{N-1} x[n] \cdot e^{-j2\pi kn/N}, \quad k = 0, 1, \ldots, N-1
+\]
+
+快速傅里叶变换（FFT）是计算 DFT 的高效算法, 将计算复杂度从 \(O(N^2)\) 降低到 \(O(N\log N)\)。
+
+\section{系统架构}
+
+系统采用前后端分离的三层架构:
+
+\begin{itemize}
+    \item \textbf{C++ DSP Engine（后端计算层）}：负责所有信号处理和滤波器计算，通过 stdin/stdout JSON 协议与前端通信。所有波形生成、FIR/IIR 滤波、FFT 分析、智能滤波器设计都在这一层完成。
+    \item \textbf{Electron Main Process（中间桥接层）}：作为 C++ 引擎和前端 UI 之间的桥梁。负责启动和管理 DSP 引擎子进程，维护 IPC 命令队列，转发请求和响应。
+    \item \textbf{React Frontend（前端展示层）}：提供 macOS Big Sur 风格的图形用户界面。包含波形参数控制面板、滤波器参数面板、智能设计弹窗、播放/停止控制，以及三个 ECharts 图表（时域波形、频谱、零极点图）。
+\end{itemize}
+
+\section{核心特性}
+
+\begin{itemize}
+    \item 七种波形发生器：正弦波、方波、三角波、锯齿波、白噪声、粉红噪声、脉冲波
+    \item 波形参数实时控制：频率（1--96kHz）、幅度（0--1）、相位（0--360\degree）、占空比（0--100\%）
+    \item 多波形独立控制与实时叠加混合
+    \item FIR 滤波器：五种窗口函数（矩形、汉明、汉宁、布莱克曼、凯泽），LP/HP/BP/BS 四种类型
+    \item IIR 滤波器：六种模拟原型（巴特沃斯、切比雪夫I/II、椭圆、贝塞尔、勒让德）加九种 RBJ 双二阶滤波器
+    \item IIR 参数可调：阶数 1--20、截止频率、通带纹波、阻带衰减、Q 值
+    \item 智能滤波器设计：根据通带/阻带指标自动选择最优原型和阶数
+    \item 滤波器链：多个滤波器串联，每个可独立旁路
+    \item 实时分析：时域波形图、FFT 频谱图（256点 Hanning窗）、零极点图
+\end{itemize}
+
+\chapter{项目结构}
+
+\section{目录结构}
+
+\begin{lstlisting}
+MYGO-DSP/
+├── README.md                 # 项目说明
+├── PROJECT_PLAN.md           # 策划书
+├── dsp-core/                 # C++ DSP 引擎
+│   ├── CMakeLists.txt        # CMake 构建
+│   ├── include/              # 头文件（接口定义）
+│   │   ├── DSPMath.h         # 数学常量 Pi/TwoPi
+│   │   ├── Buffer.h          # 环形缓冲区模板
+│   │   ├── IOperator.h       # 算子抽象接口
+│   │   ├── WaveformGenerator.h
+│   │   ├── FIRFilter.h
+│   │   ├── IIRFilter.h
+│   │   └── AutoFilterDesigner.h
+│   ├── src/                  # 源文件（实现）
+│   │   ├── main.cpp          # IPC 入口
+│   │   ├── Engine.h/cpp      # 引擎调度器
+│   │   ├── WaveformGenerator.cpp
+│   │   ├── FIRFilter.cpp
+│   │   ├── IIRFilter.cpp
+│   │   └── AutoFilterDesigner.cpp
+│   ├── tests/                # Google Test + 基准测试
+│   └── build/                # 构建输出 (.exe + .a)
+├── frontend/                 # Electron + React 前端
+│   ├── electron/             # 主进程 + preload
+│   ├── src/                  # React 组件 + 样式
+│   └── release/              # 打包输出
+└── report/                   # 开发报告
+\end{lstlisting}
+
+\chapter{环境搭建}
+
+\section{准备工作}
+
+要编译和运行 MYGO-DSP, 需要以下工具:
+
+\begin{enumerate}
+    \item CMake（版本 $\geq$ 3.16）
+    \item MinGW/GCC（版本 $\geq$ 8.1, 支持 C++17）
+    \item Node.js（版本 $\geq$ 18）
+    \item Visual Studio Code（推荐，用于编辑代码）
+    \item Git（版本管理）
+\end{enumerate}
+
+以下各节详细介绍每个工具的安装步骤。
+
+\section{安装 CMake}
+
+CMake 是一个跨平台的构建系统生成器。它可以读取 CMakeLists.txt 配置文件, 自动生成 Makefile 或 Visual Studio 项目文件。
+
+安装步骤:
+\begin{enumerate}
+    \item 打开浏览器, 访问 \url{https://cmake.org/download/}
+    \item 下载 Windows 版本的安装包（cmake-x.xx.x-windows-x86\_64.msi）
+    \item 运行安装程序, 在安装选项中选择"Add CMake to system PATH"
+    \item 安装完成后, 打开命令提示符或 PowerShell, 输入:
+\end{enumerate}
+
+\begin{lstlisting}
+cmake --version
+\end{lstlisting}
+
+如果显示版本号（如 cmake version 3.28.0）, 说明安装成功。
+
+\section{安装 MinGW/GCC}
+
+MinGW（Minimalist GNU for Windows）是 Windows 平台上的 GCC 编译器套件。C++ 代码需要通过编译器转换为可执行文件。
+
+推荐使用 MinGW-w64 版本:
+
+\begin{enumerate}
+    \item 可以从 \url{https://www.mingw-w64.org/} 下载
+    \item 也可以使用 Qt 自带的 MinGW（如 D:\textbackslash Qt\textbackslash Tools\textbackslash mingw1120\_64）
+    \item 安装后, 将 bin 目录添加到系统 PATH 环境变量
+\end{enumerate}
+
+\begin{lstlisting}
+# 验证安装
+g++ --version
+\end{lstlisting}
+
+如果显示版本号（如 g++ 11.2.0）, 说明安装成功。注意 GCC 版本必须支持 C++17 标准。
+
+\section{安装 Node.js}
+
+Node.js 是 JavaScript 的运行时环境, 用于运行前端的构建工具和 Electron 应用。
+
+\begin{enumerate}
+    \item 访问 \url{https://nodejs.org/}
+    \item 下载 LTS（长期支持）版本
+    \item 运行安装程序, 保持默认选项
+\end{enumerate}
+
+\begin{lstlisting}
+# 验证安装
+node --version
+npm --version
+\end{lstlisting}
+
+\section{安装 Visual Studio Code}
+
+VS Code 是一个轻量级但功能强大的代码编辑器。虽然不是必需的（可以用任何文本编辑器）, 但它提供了优秀的 C++ 和 TypeScript 开发支持。
+
+\begin{enumerate}
+    \item 访问 \url{https://code.visualstudio.com/}
+    \item 下载 Windows 版本并安装
+    \item 推荐安装以下扩展: C/C++（Microsoft）、CMake Tools、ESLint、Prettier
+\end{enumerate}
+
+\chapter{C++ DSP 核心实现}
+
+\section{概述}
+
+DSP 引擎是系统的核心, 用 C++17 编写, 约 2500 行代码。所有信号处理和滤波器计算都在这一层完成。
+
+引擎采用**单例模式**（Singleton Pattern）: \texttt{Engine} 类只有一个全局实例, 通过 \texttt{Engine::instance()} 访问。这种设计确保所有代码共享同一个引擎状态。
+
+\section{IOperator 接口}
+
+\texttt{IOperator} 是一个抽象基类（接口）, 定义了所有信号处理单元的通用行为:
+
+\begin{lstlisting}
+class IOperator {
+public:
+    virtual ~IOperator() = default;
+    virtual void process(const double* input, double* output, 
+                          size_t numSamples) = 0;
+    virtual void reset() = 0;
+    virtual bool isBypassed() const = 0;
+    virtual void setBypass(bool bypass) = 0;
+};
+\end{lstlisting}
+
+\texttt{process} 是核心方法, 接受输入数组指针、输出数组指针和样本数量。\texttt{reset} 重置内部状态。\texttt{isBypassed} 和 \texttt{setBypass} 控制旁路——当算子被旁路时, 输入直接复制到输出, 不做处理。
+
+波形发生器和滤波器都继承自这个接口。
+
+\section{波形发生器}
+
+波形发生器通过**相位累加器**产生周期信号。相位累加器 \(\phi[n]\) 以采样率递增:
+
+\[
+\phi[n] = \phi[n-1] + \frac{f}{f_s}
+\]
+
+其中 \(f\) 是目标频率, \(f_s\) 是采样率。当相位超过 1 时回绕到小数部分。
+
+\subsection{正弦波}
+
+\[
+x[n] = A \cdot \sin(2\pi \phi[n] + \theta)
+\]
+
+正弦波是最基本的波形, 能量集中在单一频率。实现使用 C++ 标准库的 \texttt{std::sin} 函数。
+
+\subsection{方波}
+
+\[
+x[n] = \begin{cases}
++A, & \text{frac}(\phi[n] + \theta/2\pi) < D \\
+-A, & \text{否则}
+\end{cases}
+\]
+
+方波的傅里叶级数展开为:
+
+\[
+x_{\text{square}}(t) = \frac{4A}{\pi} \sum_{k=1,3,5,\ldots}^{\infty} \frac{\sin(2\pi k f t)}{k}
+\]
+
+方波含有丰富的奇次谐波, 频谱能量以 \(1/k\) 衰减。
+
+\subsection{三角波}
+
+三角波的谐波幅度以 \(1/k^2\) 衰减, 比方式更快, 频谱更干净:
+
+\[
+x[n] = 4A \left| \text{frac}(\phi[n] + \theta/2\pi) - 0.5 \right| - A
+\]
+
+\subsection{锯齿波}
+
+锯齿波包含所有整数次谐波, 是合成器中常用的扫频音色:
+
+\[
+x[n] = 2A \cdot \text{frac}(\phi[n] + \theta/2\pi) - A
+\]
+
+\subsection{白噪声}
+
+使用 C++ MT19937-64 Mersenne Twister 生成器产生均匀分布随机数, 映射到 \([-1, 1]\) 区间。
+
+\subsection{粉红噪声}
+
+粉红噪声的功率谱密度以 \(1/f\) 衰减, 听起来比白噪声更"柔和"。通过 Paul Kellet 的六阶递归滤波器近似实现:
+
+\[
+y[n] = 0.99886y_0 + 0.99332y_1 + 0.96900y_2 + 0.86650y_3 + 0.55000y_4 - 0.7616y_5 + 0.5362w[n]
+\]
+
+其中 \(y_k\) 是滤波器的内部状态, \(w[n]\) 是白噪声输入。
+
+\section{FIR 滤波器}
+
+\subsection{原理}
+
+有限脉冲响应（FIR）滤波器的输出是输入与脉冲响应的卷积:
+
+\[
+y[n] = \sum_{k=0}^{N-1} h[k] \cdot x[n-k]
+\]
+
+其中 \(h[k]\) 是滤波器系数（脉冲响应）, \(N\) 是滤波器阶数加一。FIR 滤波器始终稳定（无反馈环路）, 且可以设计为线性相位。
+
+\subsection{窗函数法设计}
+
+窗函数法是最简单的 FIR 设计方法:
+
+步骤一: 确定理想脉冲响应。对于截止频率 \(f_c\) 的低通滤波器:
+
+\[
+h_{\text{ideal}}[n] = \frac{\sin(\omega_c (n - M))}{\pi (n - M)}
+\]
+
+其中 \(\omega_c = 2\pi f_c / f_s\) 是归一化角频率, \(M = N/2\) 是群延迟。
+
+步骤二: 加窗截断。理想脉冲响应无限长, 需乘以窗函数:
+
+\[
+h[n] = h_{\text{ideal}}[n] \cdot w[n]
+\]
+
+步骤三: 归一化, 保证直流增益为 1。
+
+\subsection{窗函数}
+
+\begin{itemize}
+    \item \textbf{矩形窗}: \(w[n] = 1\)。主瓣最窄但旁瓣衰减最小（-13dB）
+    \item \textbf{汉明窗}: \(w[n] = 0.54 - 0.46\cos(2\pi n/(N-1))\)。旁瓣-43dB
+    \item \textbf{汉宁窗}: \(w[n] = 0.5 - 0.5\cos(2\pi n/(N-1))\)。旁瓣-32dB
+    \item \textbf{布莱克曼窗}: 旁瓣-58dB, 但主瓣最宽
+    \item \textbf{凯泽窗}: 通过参数 \(\beta\) 在主瓣宽度和旁瓣衰减之间权衡
+\end{itemize}
+
+\subsection{实现}
+
+FIR 滤波采用直接型结构, 使用环形缓冲区管理延迟线:
+
+\begin{lstlisting}
+for each sample n:
+    delayLine[delayIndex] = input[n]
+    sum = 0
+    idx = delayIndex
+    for j = 0 to N-1:
+        sum += taps[j] * delayLine[idx]
+        idx = (idx == 0) ? N-1 : idx-1
+    output[n] = sum
+    delayIndex = (delayIndex + 1) % N
+\end{lstlisting}
+
+环形缓冲区避免了每次处理时移动数据的开销, 时间复杂度 \(O(N)\) 每样本。
+
+\subsection{类型转换}
+
+从低通原型推导其他类型:
+
+\[
+h_{\text{HP}}[n] = \delta[n - M] - h_{\text{LP}}[n]
+\]
+\[
+h_{\text{BP}}[n] = h_{\text{LP2}}[n] - h_{\text{LP1}}[n]
+\]
+\[
+h_{\text{BS}}[n] = \delta[n - M] - h_{\text{BP}}[n]
+\]
+
+\chapter{IIR 滤波器}
+
+\section{基本原理}
+
+无限脉冲响应（IIR）滤波器具有反馈结构:
+
+\[
+y[n] = \sum_{k=0}^{M} b_k x[n-k] - \sum_{k=1}^{N} a_k y[n-k]
+\]
+
+IIR 可以用比 FIR 低得多的阶数实现相同的频率选择性, 但存在稳定性问题和非线性相位。
+
+\section{双二阶节级联}
+
+为保持数值稳定性, 高阶 IIR 滤波器分解为多个双二阶节的级联:
+
+\[
+H(z) = \prod_{k=1}^{K} \frac{b_{k0} + b_{k1}z^{-1} + b_{k2}z^{-2}}{1 + a_{k1}z^{-1} + a_{k2}z^{-2}}
+\]
+
+每个双二阶节使用直接 II 型转置结构实现:
+
+\[
+y[n] = b_0 x[n] + b_1 x[n-1] + b_2 x[n-2] - a_1 y[n-1] - a_2 y[n-2]
+\]
+
+\section{模拟原型}
+
+IIR 滤波器设计从模拟原型出发, 通过双线性变换映射到数字域。
+
+\subsection{巴特沃斯滤波器}
+
+幅度响应在通带内最为平坦:
+
+\[
+|H(j\omega)|^2 = \frac{1}{1 + (\omega/\omega_c)^{2N}}
+\]
+
+极点均匀分布在 s 平面左半平面的单位圆上:
+
+\[
+p_k = \omega_c e^{j\left(\frac{\pi}{2} + \frac{(2k+1)\pi}{2N}\right)}
+\]
+
+\subsection{切比雪夫 I 型}
+
+在通带内有等波纹, 阻带内单调:
+
+\[
+|H(j\omega)|^2 = \frac{1}{1 + \varepsilon^2 C_N^2(\omega/\omega_c)}
+\]
+
+其中 \(C_N(x)\) 是 N 阶切比雪夫多项式。
+
+\subsection{椭圆滤波器}
+
+在通带和阻带内都有等波纹, 对于给定阶数提供最陡的滚降。设计涉及雅可比椭圆函数的计算。
+
+\section{双线性变换}
+
+模拟滤波器到数字滤波器的映射通过双线性变换实现:
+
+\[
+s = \frac{2}{T} \cdot \frac{1 - z^{-1}}{1 + z^{-1}}
+\]
+
+为克服频率轴的非线性压缩（频率翘曲）, 变换前需要对截止频率预翘曲:
+
+\[
+\omega_{\text{pre}} = \frac{2}{T} \tan\left(\frac{\omega_d T}{2}\right)
+\]
+
+\section{RBJ 双二阶滤波器}
+
+Robert Bristow-Johnson 提出的一组音频滤波器公式, 提供 9 种常见滤波器类型的解析系数公式。以低通为例:
+
+\[
+\omega_0 = 2\pi f_0/f_s, \quad \alpha = \frac{\sin\omega_0}{2Q}
+\]
+\[
+b_0 = \frac{1-\cos\omega_0}{2}, \quad b_1 = 1-\cos\omega_0, \quad b_2 = \frac{1-\cos\omega_0}{2}
+\]
+\[
+a_0 = 1+\alpha, \quad a_1 = -2\cos\omega_0, \quad a_2 = 1-\alpha
+\]
+
+最终系数归一化为 \(b_k/a_0\) 和 \(a_k/a_0\)。
+
+\chapter{智能滤波器设计器}
+
+\section{设计目标}
+
+智能设计器的目标: 给定技术指标, 自动选择最优滤波器和阶数。
+
+\section{输入参数}
+
+\begin{itemize}
+    \item 滤波器类型: 低通/高通/带通/带阻
+    \item 采样率 \(f_s\)
+    \item 通带截止频率 \(f_{\text{pass}}\) 和纹波 \(A_p\) (dB)
+    \item 阻带截止频率 \(f_{\text{stop}}\) 和衰减 \(A_s\) (dB)
+\end{itemize}
+
+\section{频率归一化}
+
+\[
+\omega_p = \frac{f_{\text{pass}}}{f_s/2}, \quad \omega_s = \frac{f_{\text{stop}}}{f_s/2}
+\]
+
+\section{阶数估算}
+
+\subsection{巴特沃斯}
+
+\[
+N = \left\lceil \frac{\log_{10}\left(\frac{10^{A_s/10} - 1}{10^{A_p/10} - 1}\right)}{2 \log_{10}(\omega_s / \omega_p)} \right\rceil
+\]
+
+\subsection{切比雪夫}
+
+\[
+N = \left\lceil \frac{\cosh^{-1}\left(\sqrt{\frac{10^{A_s/10} - 1}{10^{A_p/10} - 1}}\right)}{\cosh^{-1}(\omega_s / \omega_p)} \right\rceil
+\]
+
+\subsection{椭圆}
+
+\[
+k = \frac{\omega_p}{\omega_s}, \quad k_1 = \frac{\varepsilon_p}{\varepsilon_s}
+\]
+\[
+N = \left\lceil \frac{K(k) K(\sqrt{1-k_1^2})}{K(\sqrt{1-k^2}) K(k_1)} \right\rceil
+\]
+
+其中 \(K(k)\) 是第一类完全椭圆积分。
+
+\section{原型选择策略}
+
+\begin{enumerate}
+    \item 首先尝试椭圆滤波器（最陡滚降, 最小阶数）
+    \item 如果阶数超限, 尝试切比雪夫 II 型
+    \item 再超限尝试巴特沃斯
+    \item 全部超限则回退到凯泽窗 FIR
+\end{enumerate}
+
+\section{FIR 回退}
+
+\[
+N_{\text{FIR}} = \left\lceil \frac{A_s - 7.95}{14.36 \cdot \Delta f} \right\rceil, \quad \Delta f = \frac{|f_{\text{stop}} - f_{\text{pass}}|}{f_s}
+\]
+
+凯泽窗参数 \(\beta\):
+
+\[
+\beta = \begin{cases}
+0.1102(A_s - 8.7), & A_s > 50 \\
+0.5842(A_s - 21)^{0.4} + 0.07886(A_s - 21), & 21 \leq A_s \leq 50 \\
+0, & A_s < 21
+\end{cases}
+\]
+
+\chapter{IPC 通信协议}
+
+\section{概述}
+
+DSP 引擎与 Electron 主进程之间通过 stdin/stdout 管道进行 JSON 行协议通信。每个请求和响应各占一行文本。
+
+这种"一问一答"的模式叫做请求-响应协议。选择 stdin/stdout 管道而不是网络端口或共享内存, 是因为实现最简单、跨平台兼容性最好、不需要额外库依赖。
+
+\section{请求格式}
+
+\begin{lstlisting}
+{"id": 1, "cmd": "addWave", "type": 0, "frequency": 440, 
+ "amplitude": 0.5, "phase": 0, "dutyCycle": 0.5, "sampleRate": 44100}
+\end{lstlisting}
+
+\texttt{id} 是递增请求标识符, 从 1 开始。C++ 引擎在响应中返回相同 id, 这样主进程就知道响应对应哪个请求。
+
+\texttt{cmd} 是命令名称, 参数扁平化到 JSON 顶层——C++ 端用字符串搜索函数逐字段提取, 嵌套结构会大幅增加解析复杂度。
+
+\section{响应格式}
+
+\begin{lstlisting}
+{"id": 1, "status": "ok", "data": 0}
+\end{lstlisting}
+
+\texttt{data} 可以是数字、数组或字符串。\texttt{status} 为 \texttt{"ok"} 或 \texttt{"error"}。
+
+\section{命令列表}
+
+\begin{longtable}{p{3cm}p{3cm}p{7cm}}
+\caption{IPC 命令一览}
+\endfirsthead
+\hline
+\textbf{命令} & \textbf{参数} & \textbf{说明} \\
+\hline
+\endhead
+\hline
+\endfoot
+init & sampleRate, bufferSize & 初始化引擎 \\
+addWave & type, frequency, amplitude, phase, dutyCycle & 添加波形（返回ID） \\
+removeWave & wid & 删除波形 \\
+updateWave & wid, type, ... & 更新波形参数 \\
+addFilterIIR & prototype, passType, order, cutoff, ... & 添加IIR滤波器 \\
+addFilterFIR & order, window, cutoff, passType, ... & 添加FIR滤波器 \\
+removeFilter & fid & 删除滤波器 \\
+updateFilter & fid, ..., isIIR & 更新滤波器参数 \\
+setBypass & bid, bypass, target & 设置旁路 \\
+process & （无） & 处理一帧（128采样点） \\
+autoDesign & type, fs, fpass, fstop, Ap, As & 智能设计 \\
+getPoleZero & fid & 获取零极点 \\
+exit & （无） & 退出引擎 \\
+\hline
+\end{longtable}
+
+\chapter{构建与部署}
+
+\section{编译 DSP 引擎}
+
+\begin{lstlisting}
+cd dsp-core
+mkdir build && cd build
+cmake .. -G "MinGW Makefiles"
+mingw32-make -j4
+\end{lstlisting}
+
+静态链接 MinGW 运行时库, 生成独立可执行文件。
+
+\section{构建前端}
+
+\begin{lstlisting}
+cd frontend
+npm install
+npx vite build
+\end{lstlisting}
+
+\section{打包 Electron}
+
+\begin{lstlisting}
+npx --package @electron/asar asar pack dist+electron app.asar
+\end{lstlisting}
+
+将 \texttt{app.asar} 和 \texttt{mygo\_dsp\_engine.exe} 放入 Electron 的 \texttt{resources} 目录即可运行。
+
+\chapter{测试验证}
+
+\section{单元测试}
+
+使用 Google Test 框架, 共 38 个测试用例, 覆盖所有核心模块。
+
+\subsection{波形测试}
+
+六个测试用例验证正弦波输出、频率准确度、旁路零输出、方波占空比、白噪声非零、相位重置。
+
+\subsection{FIR 测试}
+
+五个测试用例验证低通直流通、高通阻直流、脉冲响应长度、旁路复制输入、凯泽窗系数。
+
+\subsection{IIR 测试}
+
+六个测试用例验证巴特沃斯稳定性、高频衰减、旁路复制输入、双二阶系数有限性、RBJ 直流增益、重置清空状态。
+
+\subsection{引擎测试}
+
+五个测试用例验证单例模式、初始化和处理、滤波器链能量减少、波形旁路零输出、多波形叠加。
+
+\subsection{智能设计测试}
+
+八个测试用例验证 LP/HP/BP/BS 设计、FIR 回退、无效参数检测、阶数估算。
+
+\section{性能基准}
+
+测试环境: Intel i7-10750H @ 2.60GHz, MinGW GCC, -O2 优化
+
+\begin{longtable}{p{5cm}p{3cm}p{3cm}}
+\caption{性能测试结果}
+\endfirsthead
+\hline
+\textbf{测试项} & \textbf{吞吐量} & \textbf{每样本} \\
+\hline
+\endhead
+\hline
+\endfoot
+波形生成（10000x512） & 18.9M 样本/秒 & 52.83 ns \\
+FIR 滤波 order=32 & 5.2M 样本/秒 & 193.25 ns \\
+FIR 滤波 order=64 & 3.1M 样本/秒 & 319.64 ns \\
+FIR 滤波 order=128 & 1.7M 样本/秒 & 599.30 ns \\
+IIR 滤波 order=4 & 45.4M 样本/秒 & 22.02 ns \\
+IIR 滤波 order=8 & 21.5M 样本/秒 & 46.56 ns \\
+完整管线 & 23,928 帧/秒 & 41.79 $\mu$s \\
+\hline
+\end{longtable}
+
+\chapter{理论验证}
+
+\section{低通滤波实验}
+
+实验: 叠加 250Hz 正弦波和 2000Hz 方波, 通过 500Hz 截频的 4 阶椭圆低通。
+
+理论: 250Hz 正弦在通带内应通过, 2000Hz 方波谐波应被衰减, 输出应为光滑正弦。
+
+结果: 滤波后输出为光滑正弦, 前10采样点呈平滑上升 (\(4.7\times10^{-7}\) 至 \(0.00269\)), 未滤波时显示方波跳变 (\(0.748\) 至 \(0.163\))。结论: ✅ 正确。
+
+\section{旁路功能实验}
+
+滤波状态与旁路状态的输出能量显著不同（42.96 vs 29.42）。取消旁路后立即恢复滤波。✅
+
+\section{FIR 稳定性}
+
+FIR 输出全部为有限值, 无 NaN/Inf, 幅度有界不发散。✅
+
+\end{document}

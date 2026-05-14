@@ -4,7 +4,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MYGO-DSP 项目开发报告</title>
-  <style>@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono&display=swap');
+  
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('p, li, td, th, dt, dd, div').forEach(function(el) {
+    el.innerHTML = el.innerHTML.replace(/\\<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;">([\s\S]*?)\\</div>/g, function(_, m) {
+      try { return katex.renderToString(m, {displayMode: true, throwOnError: false}); }
+      catch(e) { return '<span style="color:red">' + m + '</span>'; }
+    });
+    el.innerHTML = el.innerHTML.replace(/\\<span style="font-family:serif;font-style:italic;">([\s\S]*?)\\</span>/g, function(_, m) {
+      try { return katex.renderToString(m, {displayMode: false, throwOnError: false}); }
+      catch(e) { return '<span style="color:red">' + m + '</span>'; }
+    });
+  });
+});
+</script>
+<style>@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono&display=swap');
 :root {
   --body-font: 'Noto Serif SC', 'Source Han Serif SC', Georgia, serif;
   --sans-font: 'Noto Sans SC', 'Source Han Sans SC', -apple-system, sans-serif;
@@ -215,15 +231,15 @@ Modular Yielding Graphical Operators<br />
 
 <p>数学上，一个离散时间信号可以表示为 <span style="font-family:serif;">x[n]</span>，其中 <span style="font-family:serif;">n</span> 是整数索引（第 <span style="font-family:serif;">n</span> 个采样点）。例如，一个正弦波信号可以写成：</p>
 
-\[ x[n] = A \cdot \sin(2\pi f n / f_s + \phi) \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> x[n] = A \cdot \sin(2\pi f n / f<sub>s</sub> + \phi) </div>
 
-<p>其中 <span style="font-family:serif;">A</span> 是幅度，<span style="font-family:serif;">f</span> 是频率，<span style="font-family:serif;">f_s</span> 是采样率，\(\phi\) 是初始相位。</p>
+<p>其中 <span style="font-family:serif;">A</span> 是幅度，<span style="font-family:serif;">f</span> 是频率，<span style="font-family:serif;">f<sub>s</sub></span> 是采样率，<span style="font-family:serif;font-style:italic;">\phi</span> 是初始相位。</p>
 
 <h3>什么是采样率？</h3>
 
 <p>采样率（Sample Rate）表示每秒钟采集多少个采样点，单位是 Hz（赫兹）。CD 音质的采样率是 44,100 Hz，即每秒采集 44,100 个点。专业音频设备常用 48,000 Hz 或 96,000 Hz。采样率越高，能还原的信号频率越高。根据奈奎斯特采样定理（Nyquist Theorem）：要无失真地还原一个信号，采样率必须至少是该信号最高频率的两倍：</p>
 
-\[ f_s \geq 2 f_{\text{max}} \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> f<sub>s</sub> \geq 2 f<sub>\text{max</sub>} </div>
 
 <p>例如，人耳能听到的最高频率约为 20,000 Hz，所以理论上 40,000 Hz 以上的采样率就足够了。</p>
 
@@ -231,7 +247,7 @@ Modular Yielding Graphical Operators<br />
 
 <p>频率（Frequency）表示信号每秒振动的次数，单位也是 Hz。中央 C（中音多）的频率约为 261.6 Hz。标准音 A4 的频率是 440 Hz。人耳能听到的频率范围大约是 20 Hz 到 20,000 Hz。频率与周期的关系是：</p>
 
-\[ f = \frac{1}{T} \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> f = <sup>1</sup>⁄<sub>T</sub> </div>
 
 <h3>什么是滤波器？</h3>
 
@@ -284,7 +300,7 @@ Modular Yielding Graphical Operators<br />
 <h3>什么是 CMake？</h3>
 <p>CMake 是一个构建系统生成器。它把统一的配置文件（CMakeLists.txt）翻译成不同平台和编译器能理解的格式。</p>
 <h3>下载 CMake</h3>
-<p>访问 CMake 官方网站 https://cmake.org/download/，下载 cmake-3.30.x-windows-x86_64.msi。</p>
+<p>访问 CMake 官方网站 https://cmake.org/download/，下载 cmake-3.30.x-windows-x86<sub>6</sub>4.msi。</p>
 <h3>安装过程</h3>
 <p>双击安装文件，勾选 "Add CMake to the system PATH for all users"，点击 Install。</p>
 <h3>验证安装</h3>
@@ -293,7 +309,7 @@ Modular Yielding Graphical Operators<br />
 <h3>什么是编译器？</h3>
 <p>编译器把 C++ 源代码转换成机器代码。GCC 是 GNU Compiler Collection，MinGW 是 GCC 的 Windows 版本。</p>
 <h3>安装 MSYS2 和 GCC</h3>
-<p>访问 https://www.msys2.org/ 下载安装程序。在 MSYS2 终端中执行：<code>pacman -Syu</code>，然后 <code>pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain</code>。</p>
+<p>访问 https://www.msys2.org/ 下载安装程序。在 MSYS2 终端中执行：<code>pacman -Syu</code>，然后 <code>pacman -S --needed base-devel mingw-w64-ucrt-x86<sub>6</sub>4-toolchain</code>。</p>
 <h3>添加环境变量</h3>
 <p>将 <code>C:\msys64\ucrt64\bin</code> 添加到系统 Path。</p>
 <h3>验证安装</h3>
@@ -329,7 +345,7 @@ Modular Yielding Graphical Operators<br />
 <h3>头文件与源文件的区别</h3>
 <p>头文件（.h）像目录——只声明有什么功能。源文件（.cpp）像具体内容——实现功能。分开的好处：编译速度快、代码组织好、信息隐藏。</p>
 <h3>命名空间（namespace）</h3>
-<p>所有代码在 mygo_dsp 命名空间下。使用方式：完整限定名、using 声明、using 指令。</p>
+<p>所有代码在 mygo<sub>d</sub>sp 命名空间下。使用方式：完整限定名、using 声明、using 指令。</p>
 <h2 id="ch3-3">3.3 frontend 目录详解</h2>
 <p>frontend 包含：electron/（主进程和预加载脚本）、src/（React组件）、配置文件。</p>
 <h2 id="ch3-4">3.4 report 目录</h2>
@@ -360,28 +376,28 @@ public:
 <p>virtual 关键字实现多态。纯虚函数（= 0）在抽象类中声明，子类必须实现。</p>
 <pre><code>class IOperator {
 public:
-    virtual void process(const double* input, double* output, size_t numSamples) = 0;
+    virtual void process(const double* input, double* output, size<sub>t</sub> numSamples) = 0;
 };</code></pre>
 <h3>什么是智能指针？</h3>
-<p>std::unique_ptr 自动管理对象生命周期，避免内存泄漏。</p>
+<p>std::unique<sub>p</sub>tr 自动管理对象生命周期，避免内存泄漏。</p>
 <h3>什么是 std::vector？</h3>
-<p>动态数组，长度可运行时改变，内存连续，支持 push_back、size、[] 等操作。</p>
-<h3>什么是 std::unordered_map？</h3>
+<p>动态数组，长度可运行时改变，内存连续，支持 push<sub>b</sub>ack、size、[] 等操作。</p>
+<h3>什么是 std::unordered<sub>m</sub>ap？</h3>
 <p>哈希表，存储键值对。Engine 用其按 ID 快速查找波形和滤波器。</p>
 <h3>什么是互斥锁？</h3>
-<p>std::mutex 保护共享数据，防止多线程竞态条件。std::lock_guard 是 RAII 风格的锁管理。</p>
+<p>std::mutex 保护共享数据，防止多线程竞态条件。std::lock<sub>g</sub>uard 是 RAII 风格的锁管理。</p>
 <h2 id="ch4-2">4.2 DSPMath.h — 数学常量定义</h2>
 <pre><code>#pragma once
-#ifndef DSPMATH_H
-#define DSPMATH_H
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
+#ifndef DSPMATH<sub>H</sub>
+#define DSPMATH<sub>H</sub>
+#ifndef M<sub>P</sub>I
+#define M<sub>P</sub>I 3.14159265358979323846
 #endif
-namespace mygo_dsp {
-    constexpr double Pi = M_PI;
-    constexpr double TwoPi = 2.0 * M_PI;
+namespace mygo<sub>d</sub>sp {
+    constexpr double Pi = M<sub>P</sub>I;
+    constexpr double TwoPi = 2.0 * M<sub>P</sub>I;
 }</code></pre>
-<p>在信号处理中，\(\pi\) 无处不在。正弦函数、滤波器设计、傅里叶变换都离不开 \(\pi\)。</p>
+<p>在信号处理中，<span style="font-family:serif;font-style:italic;">\pi</span> 无处不在。正弦函数、滤波器设计、傅里叶变换都离不开 <span style="font-family:serif;font-style:italic;">\pi</span>。</p>
 <h2 id="ch4-3">4.3 Buffer.h — 环形缓冲区</h2>
 <p>环形缓冲区（Ring Buffer）是一种高效的数据结构，用读/写指针管理数据。写指针指向写入位置，读指针指向读取位置。到达末尾时自动回卷。</p>
 <p>push 函数写入数据，pop 函数读取数据。使用模板类 template<T> 支持任意类型。</p>
@@ -397,33 +413,33 @@ namespace mygo_dsp {
 <h2 id="ch4-5">4.5 WaveformGenerator — 波形发生器</h2>
 <p>枚举 WaveformType 定义了 7 种波形。参数结构体 WaveformParams 包含频率、幅度、相位、占空比等。</p>
 <h3>核心算法：相位累加器</h3>
-<p>相位累加器维护 \(\phi in [0, 1)\)，每步增加 <span style="font-family:serif;">f/f_s</span>：</p>
-\[ \phi[n] = (\phi[n-1] + f/f_s) \bmod 1 \]
-<p>正弦波：\(\sin(2\pi t + \phi)\)。方波的傅里叶级数：</p>
-\[ x(t) = \frac{4A}{\pi} \sum_{k=1,3,5,\ldots} \frac{\sin(2\pi k f t)}{k} \]
+<p>相位累加器维护 <span style="font-family:serif;font-style:italic;">\phi in [0, 1)</span>，每步增加 <span style="font-family:serif;">f/f<sub>s</sub></span>：</p>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> \phi[n] = (\phi[n-1] + f/f<sub>s</sub>) \bmod 1 </div>
+<p>正弦波：<span style="font-family:serif;font-style:italic;">\sin(2\pi t + \phi)</span>。方波的傅里叶级数：</p>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> x(t) = <sup>4A</sup>⁄<sub>\pi</sub> \sum<sub>k=1,3,5,\ldots</sub> <sup>\sin(2\pi k f t)</sup>⁄<sub>k</sub> </div>
 <p>白噪声使用均匀分布随机数，粉红噪声通过 6 个一阶低通滤波器将白噪声转换为 <span style="font-family:serif;">1/f</span> 噪声。</p>
 <h2 id="ch4-6">4.6 FIRFilter — FIR 滤波器</h2>
 <p>FIR 是 Finite Impulse Response。特点：有限脉冲响应、绝对稳定、线性相位、阶数较高。</p>
 <p>输出是输入与脉冲响应的卷积：</p>
-\[ y[n] = \sum_{k=0}^{N-1} h[k] \cdot x[n-k] \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> y[n] = \sum<sub>k=0</sub><sup>N-1</sup> h[k] \cdot x[n-k] </div>
 <p>FIR 使用环形缓冲区管理延迟线，将数据移动复杂度从 <span style="font-family:serif;">O(N)</span> 降低到 <span style="font-family:serif;">O(1)</span>。</p>
 <h3>窗函数法设计</h3>
 <p>第一步：计算理想脉冲响应</p>
-\[ h_{\text{ideal}}[n] = \frac{\sin(\omega_c (n-M))}{\pi (n-M)} \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> h<sub>\text{ideal</sub>}[n] = <sup>\sin(\omega<sub>c</sub> (n-M))</sup>⁄<sub>\pi (n-M)</sub> </div>
 <p>第二步：加窗。五种窗函数：矩形、汉明、汉宁、布莱克曼、凯泽。第三步：归一化。</p>
 <h2 id="ch4-7">4.7 IIRFilter — IIR 滤波器</h2>
 <p>IIR 是 Infinite Impulse Response。特点：无限脉冲响应、效率高（阶数低）、可能不稳定、非线性相位。</p>
-\[ y[n] = \sum_{k=0}^{M} b_k x[n-k] - \sum_{k=1}^{N} a_k y[n-k] \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> y[n] = \sum<sub>k=0</sub><sup>M</sup> b<sub>k</sub> x[n-k] - \sum<sub>k=1</sub><sup>N</sup> a<sub>k</sub> y[n-k] </div>
 <h3>双二阶节级联</h3>
-\[ H(z) = \prod_{k=1}^{K} \frac{b_0 + b_1 z^{-1} + b_2 z^{-2}}{1 + a_1 z^{-1} + a_2 z^{-2}} \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> H(z) = \prod<sub>k=1</sub><sup>K</sup> <sup>b<sub>0</sub> + b<sub>1</sub> z<sup>-1</sup> + b<sub>2</sub> z<sup>-2</sup></sup>⁄<sub>1 + a<sub>1</sub> z<sup>-1</sup> + a<sub>2</sub> z<sup>-2</sup></sub> </div>
 <p>级联提高了数值稳定性。模拟原型包括巴特沃斯、切比雪夫 I/II、椭圆、贝塞尔、勒让德。</p>
 <p>巴特沃斯：</p>
-\[ |H(j\omega)|^2 = \frac{1}{1 + (\omega/\omega_c)^{2N}} \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> |H(j\omega)|<sup>2</sup> = <sup>1</sup>⁄<sub>1 + (\omega/\omega<sub>c</sub>)<sup>2N</sup></sub> </div>
 <h2 id="ch4-8">4.8 AutoFilterDesigner — 智能设计器</h2>
 <p>根据规格自动选择最优滤波器。阶数估算公式：</p>
 <ul>
-<li>巴特沃斯：\(N = \lceil \frac{\log_{10}((10^{A_s/10} - 1)/(10^{A_p/10} - 1))}{2\log_{10}(\omega_s/\omega_p)} \rceil\)</li>
-<li>凯泽窗 FIR：\(N = \lceil \frac{A_s - 7.95}{14.36 \cdot \Delta f} \rceil\)</li>
+<li>巴特沃斯：<span style="font-family:serif;font-style:italic;">N = \lceil <sup>\log<sub>10</sub>((10<sup>A<sub>s</sub>/10</sup> - 1)/(10<sup>A<sub>p</sub>/10</sup> - 1))</sup>⁄<sub>2\log<sub>10</sub>(\omega<sub>s</sub>/\omega<sub>p</sub>)</sub> \rceil</span></li>
+<li>凯泽窗 FIR：<span style="font-family:serif;font-style:italic;">N = \lceil <sup>A<sub>s</sub> - 7.95</sup>⁄<sub>14.36 \cdot \Delta f</sub> \rceil</span></li>
 </ul>
 <h2 id="ch4-9">4.9 Engine — 引擎调度器</h2>
 <p>采用单例模式（Singleton Pattern）。C++11 线程安全的静态局部变量初始化。Engine 管理波形和滤波器的生命周期，processAudio 实现完整的音频处理管线。</p>
@@ -433,7 +449,7 @@ namespace mygo_dsp {
 <h2 id="ch5-1">5.1 什么是 IPC？</h2>
 <p>IPC 是 Inter-Process Communication（进程间通信）。C++ 引擎和 Electron 前端是独立进程，通过 stdin/stdout 管道交换 JSON 文本。</p>
 <h2 id="ch5-2">5.2 stdin 和 stdout</h2>
-<p>Electron 通过 child_process.spawn 启动引擎，将 stdin/stdout 重定向为管道。C++ 端用 std::cin/std::cout 读写。</p>
+<p>Electron 通过 child<sub>p</sub>rocess.spawn 启动引擎，将 stdin/stdout 重定向为管道。C++ 端用 std::cin/std::cout 读写。</p>
 <h2 id="ch5-3">5.3 JSON 格式详解</h2>
 <p>JSON 支持数字、字符串（双引号）、布尔值、数组（[]）、对象（{}）、null。</p>
 <h2 id="ch5-4">5.4 请求与响应格式</h2>
@@ -479,7 +495,7 @@ namespace mygo_dsp {
 <h2 id="ch6-6">6.6 ECharts 图表</h2>
 <p><strong>WaveChart</strong>：时域波形图，X轴采样点索引，Y轴幅度。</p>
 <p><strong>SpectrumChart</strong>：FFT 频谱图，256点 FFT，Hanning 窗，Y轴范围 -80dB 到 5dB。FFT 幅值：</p>
-\[ |X[k]| = \sqrt{\text{Re}^2 + \text{Im}^2} \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> |X[k]| = \sqrt{\text{Re}<sup>2</sup> + \text{Im}<sup>2</sup>} </div>
 <p><strong>PoleZeroChart</strong>：复平面零极点图，红色 X 为极点，绿色圆为零点。</p>
 <h2 id="ch6-7">6.7 macOS 风格 UI</h2>
 <p>Traffic Lights（红黄绿灯）、毛玻璃效果（backdrop-filter: blur()）、自定义 Slider。</p>
@@ -490,9 +506,9 @@ namespace mygo_dsp {
 <pre><code>cd dsp-core
 mkdir build
 cd build
-cmake .. -G "MinGW Makefiles" -DBUILD_TESTS=ON
+cmake .. -G "MinGW Makefiles" -DBUILD<sub>T</sub>ESTS=ON
 mingw32-make -j4</code></pre>
-<p>编译后生成 mygo_dsp_engine.exe。测试：<code>echo {"cmd":"exit"} | mygo_dsp_engine.exe</code>。</p>
+<p>编译后生成 mygo<sub>d</sub>sp<sub>e</sub>ngine.exe。测试：<code>echo {"cmd":"exit"} | mygo<sub>d</sub>sp<sub>e</sub>ngine.exe</code>。</p>
 <h2 id="ch7-2">7.2 构建前端</h2>
 <pre><code>cd frontend
 npm install
@@ -512,9 +528,9 @@ npm install
 npx vite build</code></pre>
 <h1 id="ch8">第八章 测试与验证</h1>
 <h2 id="ch8-1">8.1 Google Test 框架</h2>
-<p>Google Test 提供丰富的断言宏（EXPECT_EQ、EXPECT_NEAR 等）。MYGO-DSP 编写了 30+ 个单元测试用例。</p>
+<p>Google Test 提供丰富的断言宏（EXPECT<sub>E</sub>Q、EXPECT<sub>N</sub>EAR 等）。MYGO-DSP 编写了 30+ 个单元测试用例。</p>
 <pre><code>TEST(TestSuiteName, TestName) {
-    EXPECT_EQ(expected, actual);
+    EXPECT<sub>E</sub>Q(expected, actual);
 }</code></pre>
 <h2 id="ch8-2">8.2 波形生成器测试（6 个用例）</h2>
 <ul>
@@ -557,7 +573,7 @@ npx vite build</code></pre>
 <li><strong>InvalidParameters</strong>：无效参数返回失败</li>
 </ul>
 <h2 id="ch8-7">8.7 IPC 集成测试</h2>
-<p>通过 test_full.ps1 发送 14 个命令，33 个验证点。结果：31 passed, 2 failed（预期差异）。</p>
+<p>通过 test<sub>f</sub>ull.ps1 发送 14 个命令，33 个验证点。结果：31 passed, 2 failed（预期差异）。</p>
 <h2 id="ch8-8">8.8 性能基准测试</h2>
 <table><thead><tr><th>测试项</th><th>吞吐量</th><th>延迟</th></tr></thead><tbody>
 <tr><td>波形生成（10000x512）</td><td>18.9M 样本/秒</td><td>52.83 ns</td></tr>
@@ -575,37 +591,37 @@ npx vite build</code></pre>
 <h1 id="ch9">第九章 算法深度解析</h1>
 <h2 id="ch9-1">9.1 傅里叶分析基础</h2>
 <p>任何周期信号可分解为正弦波的和。傅里叶级数：</p>
-\[ x(t) = a_0 + \sum_{n=1}^{\infty} (a_n \cos(2\pi n f_0 t) + b_n \sin(2\pi n f_0 t)) \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> x(t) = a<sub>0</sub> + \sum<sub>n=1</sub><sup>\infty</sup> (a<sub>n</sub> \cos(2\pi n f<sub>0</sub> t) + b<sub>n</sub> \sin(2\pi n f<sub>0</sub> t)) </div>
 <p>离散傅里叶变换（DFT）：</p>
-\[ X[k] = \sum_{n=0}^{N-1} x[n] e^{-j2\pi kn/N} \]
-<p>FFT 将复杂度从 O(N^2) 降低到 O(N log N)。256 点 FFT 只需 1024 个蝶形运算。</p>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> X[k] = \sum<sub>n=0</sub><sup>N-1</sup> x[n] e<sup>-j2\pi kn/N</sup> </div>
+<p>FFT 将复杂度从 O(N<sup>2</sup>) 降低到 O(N log N)。256 点 FFT 只需 1024 个蝶形运算。</p>
 <h2 id="ch9-2">9.2 窗函数理论</h2>
 <p>窗函数在主瓣宽度和旁瓣衰减之间权衡：矩形窗（4pi/N, -13dB），汉明窗（8pi/N, -43dB），汉宁窗（8pi/N, -32dB），布莱克曼窗（12pi/N, -58dB），凯泽窗（beta 可调）。</p>
 <h2 id="ch9-3">9.3 FIR 窗函数法设计</h2>
 <p>理想低通脉冲响应：</p>
-\[ h_d[n] = \frac{\sin(\omega_c n)}{\pi n} \]
-<p>加窗：\(h[n] = h_d[n] \cdot w[n]\)。归一化：\(h_{\text{norm}}[n] = h[n] / \sum h[k]\)。</p>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> h<sub>d</sub>[n] = <sup>\sin(\omega<sub>c</sub> n)</sup>⁄<sub>\pi n</sub> </div>
+<p>加窗：<span style="font-family:serif;font-style:italic;">h[n] = h<sub>d</sub>[n] \cdot w[n]</span>。归一化：<span style="font-family:serif;font-style:italic;">h<sub>\text{norm</sub>}[n] = h[n] / \sum h[k]</span>。</p>
 <h2 id="ch9-4">9.4 IIR 模拟原型</h2>
 <p>巴特沃斯极点：</p>
-\[ p_k = \exp\left(j\left(\frac{\pi}{2} + \frac{(2k+1)\pi}{2N}\right)\right) \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> p<sub>k</sub> = \exp\left(j\left(<sup>\pi</sup>⁄<sub>2</sub> + <sup>(2k+1)\pi</sup>⁄<sub>2N</sub>\right)\right) </div>
 <p>切比雪夫 I 型极点分布在椭圆上。椭圆滤波器最优（通带和阻带内等波纹）。贝塞尔多项式递推：</p>
-\[ B_0(s) = 1,\quad B_1(s) = s + 1,\quad B_k(s) = (2k-1) B_{k-1}(s) + s^2 B_{k-2}(s) \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> B<sub>0</sub>(s) = 1,\quad B<sub>1</sub>(s) = s + 1,\quad B<sub>k</sub>(s) = (2k-1) B<sub>k-1</sub>(s) + s<sup>2</sup> B<sub>k-2</sub>(s) </div>
 <h2 id="ch9-5">9.5 双线性变换推导</h2>
-\[ s = \frac{2}{T} \cdot \frac{1 - z^{-1}}{1 + z^{-1}} \]
-<p>频率翘曲：\(\Omega = \frac{2}{T} \tan\left(\frac{\omega T}{2}\right)\)。预翘曲补偿非线性映射。</p>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> s = <sup>2</sup>⁄<sub>T</sub> \cdot <sup>1 - z<sup>-1</sup></sup>⁄<sub>1 + z<sup>-1</sup></sub> </div>
+<p>频率翘曲：<span style="font-family:serif;font-style:italic;">\Omega = <sup>2</sup>⁄<sub>T</sub> \tan\left(<sup>\omega T</sup>⁄<sub>2</sub>\right)</span>。预翘曲补偿非线性映射。</p>
 <h2 id="ch9-6">9.6 零极点分析</h2>
-\[ H(z) = K \cdot \frac{\prod (z - z_k)}{\prod (z - p_k)} \]
-<p>系统稳定的条件是所有极点在单位圆内（<span style="font-family:serif;">|p_k| < 1</span>）。</p>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> H(z) = K \cdot <sup>\prod (z - z<sub>k</sub>)</sup>⁄<sub>\prod (z - p<sub>k</sub>)</sub> </div>
+<p>系统稳定的条件是所有极点在单位圆内（<span style="font-family:serif;">|p<sub>k</sub>| < 1</span>）。</p>
 <h2 id="ch9-7">9.7 频率响应计算</h2>
-\[ H(e^{j\omega}) = H(z)|_{z=e^{j\omega}} \]
-<p>幅度响应（dB）：\(20 \log_{10}(|H(e^{j\omega})|)\)。群延迟：\(\tau(\omega) = -\frac{d\arg(H)}{d\omega}\)。</p>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> H(e<sup>j\omega</sup>) = H(z)|<sub>z=e<sup>j\omega</sub></sup> </div>
+<p>幅度响应（dB）：<span style="font-family:serif;font-style:italic;">20 \log<sub>10</sub>(|H(e<sup>j\omega</sup>)|)</span>。群延迟：<span style="font-family:serif;font-style:italic;">\tau(\omega) = -<sup>d\arg(H)</sup>⁄<sub>d\omega</sub></span>。</p>
 <h2 id="ch9-8">9.8 椭圆积分（AGM 算法）</h2>
-\[ K(k) = \int_{0}^{\pi/2} \frac{d\theta}{\sqrt{1 - k^2 \sin^2 \theta}} \]
-<p>AGM 算法：初始化 a0=1, b0=sqrt(1-k^2)，迭代 a=(a+b)/2, b=sqrt(a*b)，收敛后 K(k)=pi/(2*a)。收敛极快，4-5 次迭代即达双精度。</p>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> K(k) = \int<sub>0</sub><sup>\pi/2</sup> <sup>d\theta</sup>⁄<sub>\sqrt{1 - k<sup>2</sup> \sin<sup>2</sup> \theta</sub>} </div>
+<p>AGM 算法：初始化 a0=1, b0=sqrt(1-k<sup>2</sup>)，迭代 a=(a+b)/2, b=sqrt(a*b)，收敛后 K(k)=pi/(2*a)。收敛极快，4-5 次迭代即达双精度。</p>
 <h2 id="ch9-9">9.9 设计实例对比</h2>
 <p>规格：通带 1kHz，阻带 2kHz，纹波 0.5dB，衰减 40dB，采样率 44.1kHz。</p>
-<p>巴特沃斯：\(N = \lceil \log_{10}((10^4-1)/(10^{0.05}-1)) / (2\log_{10}2) \rceil = \lceil 8.16 \rceil = 9\) 阶</p>
-<p>切比雪夫 I 型：\(N = \lceil 4.82 \rceil = 5\) 阶</p>
+<p>巴特沃斯：<span style="font-family:serif;font-style:italic;">N = \lceil \log<sub>10</sub>((10<sup>4</sup>-1)/(10<sup>0.05</sup>-1)) / (2\log<sub>10</sub>2) \rceil = \lceil 8.16 \rceil = 9</span> 阶</p>
+<p>切比雪夫 I 型：<span style="font-family:serif;font-style:italic;">N = \lceil 4.82 \rceil = 5</span> 阶</p>
 <p>椭圆：仅需 3-4 阶。椭圆滤波器效率最高。</p>
 <h2 id="ch9-10">9.10 项目总结与展望</h2>
 <p>技术指标：DSP 引擎约 2,500 行 C++17，前端约 1,800 行 TypeScript，支持 7 种波形，FIR 阶数 1-200，IIR 阶数 1-20，最大吞吐量 45M 样本/秒。</p>
@@ -613,35 +629,35 @@ npx vite build</code></pre>
 <h1 id="appA">附录 A：扩展算法推导</h1>
 <h2>A.1 离散傅里叶变换的完整推导</h2>
 <p>DFT：</p>
-\[ X[k] = \sum_{n=0}^{N-1} x[n] \exp\left(-j\frac{2\pi kn}{N}\right) \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> X[k] = \sum<sub>n=0</sub><sup>N-1</sup> x[n] \exp\left(-j<sup>2\pi kn</sup>⁄<sub>N</sub>\right) </div>
 <p>逆变换 IDFT：</p>
-\[ x[n] = \frac{1}{N} \sum_{k=0}^{N-1} X[k] \exp\left(j\frac{2\pi kn}{N}\right) \]
-<p>DFT 复杂度 O(N^2)，FFT 复杂度 O(N log N)。Cooley-Tukey 算法将 N 点 DFT 分解为两个 N/2 点 DFT。</p>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> x[n] = <sup>1</sup>⁄<sub>N</sub> \sum<sub>k=0</sub><sup>N-1</sup> X[k] \exp\left(j<sup>2\pi kn</sup>⁄<sub>N</sub>\right) </div>
+<p>DFT 复杂度 O(N<sup>2</sup>)，FFT 复杂度 O(N log N)。Cooley-Tukey 算法将 N 点 DFT 分解为两个 N/2 点 DFT。</p>
 <h2>A.2 巴特沃斯极点推导</h2>
-\[ |H(j\omega)|^2 = \frac{1}{1 + (\omega/\omega_c)^{2N}} \]
-\[ s_k = \omega_c \cdot e^{j(\pi/2 + (2k+1)\pi/(2N))}, k = 0,\ldots,2N-1 \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> |H(j\omega)|<sup>2</sup> = <sup>1</sup>⁄<sub>1 + (\omega/\omega<sub>c</sub>)<sup>2N</sup></sub> </div>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> s<sub>k</sub> = \omega<sub>c</sub> \cdot e<sup>j(\pi/2 + (2k+1)\pi/(2N))</sup>, k = 0,\ldots,2N-1 </div>
 <p>只取左半平面的 N 个极点，组成 N/2 个双二阶节。</p>
 <h2>A.3 切比雪夫多项式性质</h2>
-<p>递推：<span style="font-family:serif;">C_0(x)=1, C_1(x)=x, C_{N+1}(x)=2x C_N(x) - C_{N-1}(x)</span>。</p>
+<p>递推：<span style="font-family:serif;">C<sub>0</sub>(x)=1, C<sub>1</sub>(x)=x, C<sub>N+1</sub>(x)=2x C<sub>N</sub>(x) - C<sub>N-1</sub>(x)</span>。</p>
 <p>关键性质：在 [-1,1] 内振荡，在 [1,∞) 快速增大，实现陡峭过渡带。</p>
 <h2>A.4 椭圆函数性质</h2>
 <p>雅可比椭圆函数 sn(u,k) 是 sin(u) 的推广。k=0 时 sn(u,0)=sin(u)，k=1 时 sn(u,1)=tanh(u)。</p>
 <h2>A.5 频率变换细节</h2>
-<p>低通→低通：\(s = s/\omega_c\)。低通→高通：\(s = \omega_c/s\)。</p>
-<p>低通→带通：\(s = (s^2 + \omega_0^2)/(s \cdot BW)\)。低通→带阻：互为倒数。</p>
+<p>低通→低通：<span style="font-family:serif;font-style:italic;">s = s/\omega<sub>c</sub></span>。低通→高通：<span style="font-family:serif;font-style:italic;">s = \omega<sub>c</sub>/s</span>。</p>
+<p>低通→带通：<span style="font-family:serif;font-style:italic;">s = (s<sup>2</sup> + \omega<sub>0</sub><sup>2</sup>)/(s \cdot BW)</span>。低通→带阻：互为倒数。</p>
 <h2>A.6 IIR 数值考虑</h2>
 <p>双二阶节级联避免系数范围过大（10阶直接型系数跨越10个数量级，级联型范围 0.01~2）。极点-零点配对使增益接近1。高 Q 节放前面。转置直接 II 型结构避免零延迟回路。</p>
 <h2>A.7 凯泽窗 beta 参数</h2>
-<p>beta=0 时为矩形窗（-13dB），beta=8 时约 -100dB。主瓣宽度近似：\(\Delta\omega \approx 2\pi \sqrt{1+\beta^2}/N\)。</p>
+<p>beta=0 时为矩形窗（-13dB），beta=8 时约 -100dB。主瓣宽度近似：<span style="font-family:serif;font-style:italic;">\Delta\omega \approx 2\pi \sqrt{1+\beta<sup>2</sup>}/N</span>。</p>
 <h2>A.8 FFT 窗函数选择</h2>
 <p>不加窗（矩形窗）导致频谱泄露。汉宁窗是音频分析的标准选择（-32dB 旁瓣衰减，适中主瓣宽度）。</p>
 <h2>A.9 滤波器级联分析</h2>
-\[ H_{\text{total}}(e^{j\omega}) = \prod_{i=1}^{M} H_i(e^{j\omega}) \]
-<p>在 dB 坐标下乘法变加法：\(|H_{\text{total}}|_{\text{dB}} = \sum |H_i|_{\text{dB}}\)。</p>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> H<sub>\text{total</sub>}(e<sup>j\omega</sup>) = \prod<sub>i=1</sub><sup>M</sup> H<sub>i</sub>(e<sup>j\omega</sup>) </div>
+<p>在 dB 坐标下乘法变加法：<span style="font-family:serif;font-style:italic;">|H<sub>\text{total</sub>}|<sub>\text{dB</sub>} = \sum |H<sub>i</sub>|<sub>\text{dB</sub>}</span>。</p>
 <h2>A.10 实时音频时序</h2>
 <p>128 采样点在 44.1kHz 下对应 2.9ms。前端 50ms 间隔远低于 2.9ms 实时要求，有充足裕量。</p>
 <h1 id="appB">附录 B：CMakeLists.txt 详解</h1>
-<p>cmake_minimum_required(VERSION 3.10) — 最低版本。project(...) — 项目定义。set(CMAKE_CXX_STANDARD 17) — C++17。add_executable — 创建目标。target_include_directories — 头文件路径。set_target_properties(... LINK_FLAGS "-static ...") — 静态链接。option(BUILD_TESTS) — 测试开关。</p>
+<p>cmake<sub>m</sub>inimum<sub>r</sub>equired(VERSION 3.10) — 最低版本。project(...) — 项目定义。set(CMAKE<sub>C</sub>XX<sub>S</sub>TANDARD 17) — C++17。add<sub>e</sub>xecutable — 创建目标。target<sub>i</sub>nclude<sub>d</sub>irectories — 头文件路径。set<sub>t</sub>arget<sub>p</sub>roperties(... LINK<sub>F</sub>LAGS "-static ...") — 静态链接。option(BUILD<sub>T</sub>ESTS) — 测试开关。</p>
 <h1 id="appC">附录 C：性能优化技巧</h1>
 <ul>
 <li>编译器优化（-O2 提升约 30%）</li>
@@ -688,7 +704,7 @@ npx vite build</code></pre>
 </tbody></table>
 <h1 id="appF">附录 F：源代码逐行分析</h1>
 <h2>F.1 WaveformGenerator.cpp 逐行分析</h2>
-<p>构造函数使用初始化列表初始化 params_、bypass_(false)、id_(-1)、phaseAccum_(params.phase)、rng_(std::random_device{}())。phaseAccum_ 初始化为初始相位值。</p>
+<p>构造函数使用初始化列表初始化 params_、bypass_(false)、id_(-1)、phaseAccum_(params.phase)、rng_(std::random<sub>d</sub>evice{}())。phaseAccum_ 初始化为初始相位值。</p>
 <p>generateSample 函数包含 switch 语句。正弦波调用 std::sin，方波用三元运算符，三角波用绝对值，锯齿波用线性函数，白噪声用均匀分布，粉红噪声通过 6 个递归滤波器。</p>
 <p>process 方法计算相位增量 frequency/sampleRate，对每个采样点生成波形值，更新相位累加器，超过 1 时回绕。</p>
 <h2>F.2 FIRFilter.cpp 逐行分析</h2>
@@ -701,7 +717,7 @@ npx vite build</code></pre>
 <p>sToZ 函数实现双线性变换将模拟极点/零点转换为数字双二阶系数。computeBiquads 协调设计流程。rbjDesign 实现 9 种 RBJ 公式。</p>
 <h2>F.4 Engine.cpp 逐行分析</h2>
 <p>instance() 使用 C++11 线程安全静态局部变量实现单例。init 加锁后重置所有状态。addWave 创建 WaveformGenerator 分配 ID。</p>
-<p>processAudio 实现完整管线：清除缓冲区→遍历波形发生器累加→遍历滤波器串联处理→返回输出。注意 filters_ 存储 unique_ptr<IOperator> 实现多态。</p>
+<p>processAudio 实现完整管线：清除缓冲区→遍历波形发生器累加→遍历滤波器串联处理→返回输出。注意 filters_ 存储 unique<sub>p</sub>tr<IOperator> 实现多态。</p>
 <h2>F.5 main.cpp 逐行分析</h2>
 <p>约 264 行。手工 JSON 解析：extractString/extractNumber/extractInt 通过字符串查找提取值。main 函数循环读取 stdin 命令，根据 cmd 分支执行，输出 JSON 响应。</p>
 <h1 id="appG">附录 G：Electron 主进程详解</h1>
@@ -711,9 +727,9 @@ npx vite build</code></pre>
 <h1 id="appI">附录 I：常见编译错误与解决方法</h1>
 <ul>
 <li>"undefined reference"：检查 CMakeLists.txt 是否包含所有 .cpp</li>
-<li>"std::lock_guard not declared"：添加 #include <mutex></li>
+<li>"std::lock<sub>g</sub>uard not declared"：添加 #include <mutex></li>
 <li>"use of deleted function"：Engine 不能拷贝构造</li>
-<li>"no matching function for make_unique"：启用 C++17</li>
+<li>"no matching function for make<sub>u</sub>nique"：启用 C++17</li>
 <li>"control reaches end of non-void function"：所有分支加 return</li>
 <li>"WinMain@16 undefined"：入口应为 main()</li>
 <li>"0xc000007b"：DLL 架构不匹配（64位 vs 32位）</li>
@@ -726,15 +742,15 @@ npx vite build</code></pre>
 <h2>J.2 检查清单</h2>
 <p>CMake 3.10+、MinGW/GCC 8+（C++17）、Node.js 18+、npm 8+。</p>
 <h2>J.3-J.9 详细步骤</h2>
-<p>cd dsp-core → mkdir build → cd build → cmake .. -G "MinGW Makefiles" -DBUILD_TESTS=ON → mingw32-make -j4</p>
+<p>cd dsp-core → mkdir build → cd build → cmake .. -G "MinGW Makefiles" -DBUILD<sub>T</sub>ESTS=ON → mingw32-make -j4</p>
 <p>cd ../../frontend → npm install → npx vite build → npm run electron:dev</p>
 <p>打包：npm run electron:build，输出到 release/ 目录。</p>
 <h1 id="appK">附录 K：信号处理高级概念</h1>
 <h2>K.1 卷积的物理意义</h2>
-\[ y[n] = \sum_{k=-\infty}^{\infty} x[k] \cdot h[n-k] \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> y[n] = \sum<sub>k=-\infty</sub><sup>\infty</sup> x[k] \cdot h[n-k] </div>
 <p>可用"回声"来理解：回声的叠加过程就是卷积。交换律、结合律、分配律。</p>
 <h2>K.2 群延迟与相位响应</h2>
-\[ \tau(\omega) = -\frac{d\theta(\omega)}{d\omega} \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> \tau(\omega) = -<sup>d\theta(\omega)</sup>⁄<sub>d\omega</sub> </div>
 <p>FIR 线性相位（群延迟常数），IIR 非线性相位。贝塞尔滤波器是唯一近似恒定群延迟的 IIR。</p>
 <h2>K.3 频谱泄露与窗函数</h2>
 <p>FFT 分析时截断信号导致能量泄露到相邻频率。加窗平滑两端减轻泄露，但降低频率分辨率。</p>
@@ -752,39 +768,39 @@ npx vite build</code></pre>
 <p>计算延迟（42μs）、缓冲延迟（2.9ms）、传输延迟（<1ms）、调度延迟（1-10ms）。MYGO-DSP 的 50ms 帧间隔有充足裕量。</p>
 <h1 id="appL">附录 L：DSP 数学公式速查</h1>
 <h2>L.1 基本数学公式</h2>
-\[ e^{j\theta} = \cos\theta + j\sin\theta \]
-\[ \sin(A+B) = \sin A \cos B + \cos A \sin B \]
-\[ \cos(A+B) = \cos A \cos B - \sin A \sin B \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> e<sup>j\theta</sup> = \cos\theta + j\sin\theta </div>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> \sin(A+B) = \sin A \cos B + \cos A \sin B </div>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> \cos(A+B) = \cos A \cos B - \sin A \sin B </div>
 <h2>L.2 z 变换公式</h2>
-\[ X(z) = \sum_{n=-\infty}^{\infty} x[n] z^{-n} \]
-\[ \delta[n] \leftrightarrow 1 \]
-\[ u[n] \leftrightarrow \frac{1}{1 - z^{-1}}, |z| > 1 \]
-\[ a^n u[n] \leftrightarrow \frac{1}{1 - az^{-1}}, |z| > |a| \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> X(z) = \sum<sub>n=-\infty</sub><sup>\infty</sup> x[n] z<sup>-n</sup> </div>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> \delta[n] \leftrightarrow 1 </div>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> u[n] \leftrightarrow <sup>1</sup>⁄<sub>1 - z<sup>-1</sup></sub>, |z| > 1 </div>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> a<sup>n</sup> u[n] \leftrightarrow <sup>1</sup>⁄<sub>1 - az<sup>-1</sup></sub>, |z| > |a| </div>
 <h2>L.3 傅里叶变换公式</h2>
-\[ X(j\omega) = \int_{-\infty}^{\infty} x(t) e^{-j\omega t} dt \]
-\[ X(e^{j\omega}) = \sum_{n=-\infty}^{\infty} x[n] e^{-j\omega n} \]
-\[ \sum_{n=0}^{N-1} |x[n]|^2 = \frac{1}{N} \sum_{k=0}^{N-1} |X[k]|^2 \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> X(j\omega) = \int<sub>-\infty</sub><sup>\infty</sup> x(t) e<sup>-j\omega t</sup> dt </div>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> X(e<sup>j\omega</sup>) = \sum<sub>n=-\infty</sub><sup>\infty</sup> x[n] e<sup>-j\omega n</sup> </div>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> \sum<sub>n=0</sub><sup>N-1</sup> |x[n]|<sup>2</sup> = <sup>1</sup>⁄<sub>N</sub> \sum<sub>k=0</sub><sup>N-1</sup> |X[k]|<sup>2</sup> </div>
 <h2>L.4 滤波器响应</h2>
-<p>巴特沃斯：\(|H(j\omega)|^2 = 1/(1 + (\omega/\omega_c)^{2N})\)</p>
-<p>切比雪夫 I：\(|H(j\omega)|^2 = 1/(1 + \varepsilon^2 C_N^2(\omega/\omega_c))\)</p>
+<p>巴特沃斯：<span style="font-family:serif;font-style:italic;">|H(j\omega)|<sup>2</sup> = 1/(1 + (\omega/\omega<sub>c</sub>)<sup>2N</sup>)</span></p>
+<p>切比雪夫 I：<span style="font-family:serif;font-style:italic;">|H(j\omega)|<sup>2</sup> = 1/(1 + \varepsilon<sup>2</sup> C<sub>N</sub><sup>2</sup>(\omega/\omega<sub>c</sub>))</span></p>
 <h2>L.5 窗函数公式</h2>
-<p>汉明：\(w[n] = 0.54 - 0.46\cos(2\pi n/(N-1))\)</p>
-<p>汉宁：\(w[n] = 0.5 - 0.5\cos(2\pi n/(N-1))\)</p>
-<p>布莱克曼：\(w[n] = 0.42 - 0.5\cos(2\pi n/(N-1)) + 0.08\cos(4\pi n/(N-1))\)</p>
-<p>凯泽：\(w[n] = I_0(\beta\sqrt{1-(\frac{2n}{N-1}-1)^2})/I_0(\beta)\)</p>
+<p>汉明：<span style="font-family:serif;font-style:italic;">w[n] = 0.54 - 0.46\cos(2\pi n/(N-1))</span></p>
+<p>汉宁：<span style="font-family:serif;font-style:italic;">w[n] = 0.5 - 0.5\cos(2\pi n/(N-1))</span></p>
+<p>布莱克曼：<span style="font-family:serif;font-style:italic;">w[n] = 0.42 - 0.5\cos(2\pi n/(N-1)) + 0.08\cos(4\pi n/(N-1))</span></p>
+<p>凯泽：<span style="font-family:serif;font-style:italic;">w[n] = I<sub>0</sub>(\beta\sqrt{1-(<sup>2n</sup>⁄<sub>N-1</sub>-1)<sup>2</sup>})/I<sub>0</sub>(\beta)</span></p>
 <h2>L.6 特殊函数</h2>
-\[ I_0(x) = \sum_{k=0}^{\infty} \frac{(x/2)^{2k}}{(k!)^2} \]
-\[ K(k) = \int_{0}^{\pi/2} \frac{d\theta}{\sqrt{1 - k^2 \sin^2 \theta}} \]
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> I<sub>0</sub>(x) = \sum<sub>k=0</sub><sup>\infty</sup> <sup>(x/2)<sup>2k</sup></sup>⁄<sub>(k!)<sup>2</sup></sub> </div>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> K(k) = \int<sub>0</sub><sup>\pi/2</sup> <sup>d\theta</sup>⁄<sub>\sqrt{1 - k<sup>2</sup> \sin<sup>2</sup> \theta</sub>} </div>
 <h1 id="appM">附录 M：数学证明补充</h1>
 <h2>M.1 巴特沃斯最大平坦条件证明</h2>
-<p>设 \(f(\omega) = |H(j\omega)|^2 = 1/(1 + (\omega/\omega_c)^{2N})\)。令 \(u = \omega^2\)。对 u 求导：\(f'(u) = -N u^{N-1} / (\omega_c^{2N}(1 + (u/\omega_c^2)^N)^2)\)。当 u=0 时 f'(0)=0。直到 2N-1 阶导数均为 0。</p>
+<p>设 <span style="font-family:serif;font-style:italic;">f(\omega) = |H(j\omega)|<sup>2</sup> = 1/(1 + (\omega/\omega<sub>c</sub>)<sup>2N</sup>)</span>。令 <span style="font-family:serif;font-style:italic;">u = \omega<sup>2</sup></span>。对 u 求导：<span style="font-family:serif;font-style:italic;">f'(u) = -N u<sup>N-1</sup> / (\omega<sub>c</sub><sup>2N</sup>(1 + (u/\omega<sub>c</sub><sup>2</sup>)<sup>N</sup>)<sup>2</sup>)</span>。当 u=0 时 f'(0)=0。直到 2N-1 阶导数均为 0。</p>
 <h2>M.2 双线性变换频率翘曲推导</h2>
-<p>令 \(z = e^{j\omega T}\)，代入 \(s = \frac{2}{T}\frac{1-z^{-1}}{1+z^{-1}}\)：</p>
-\[ s = \frac{2}{T} \cdot \frac{e^{j\omega T/2} - e^{-j\omega T/2}}{e^{j\omega T/2} + e^{-j\omega T/2}} = j \frac{2}{T} \tan\left(\frac{\omega T}{2}\right) \]
-<p>所以 \(\Omega = \frac{2}{T} \tan(\omega T/2)\)。当 \(\omega T \ll 1\) 时，\(\tan(x) \approx x\)，翘曲可忽略。</p>
+<p>令 <span style="font-family:serif;font-style:italic;">z = e<sup>j\omega T</sup></span>，代入 <span style="font-family:serif;font-style:italic;">s = <sup>2</sup>⁄<sub>T</sub><sup>1-z<sup>-1</sup></sup>⁄<sub>1+z<sup>-1</sup></sub></span>：</p>
+<div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;"> s = <sup>2</sup>⁄<sub>T</sub> \cdot <sup>e<sup>j\omega T/2</sup> - e<sup>-j\omega T/2</sup></sup>⁄<sub>e<sup>j\omega T/2</sup> + e<sup>-j\omega T/2</sup></sub> = j <sup>2</sup>⁄<sub>T</sub> \tan\left(<sup>\omega T</sup>⁄<sub>2</sub>\right) </div>
+<p>所以 <span style="font-family:serif;font-style:italic;">\Omega = <sup>2</sup>⁄<sub>T</sub> \tan(\omega T/2)</span>。当 <span style="font-family:serif;font-style:italic;">\omega T \ll 1</span> 时，<span style="font-family:serif;font-style:italic;">\tan(x) \approx x</span>，翘曲可忽略。</p>
 <h2>M.3 巴特沃斯阶数估算推导</h2>
-<p>通带：\((\omega_p/\omega_c)^{2N} = 10^{A_p/10} - 1\)。阻带：\((\omega_s/\omega_c)^{2N} = 10^{A_s/10} - 1\)。</p>
-<p>两式相除并取对数：\(2N \log_{10}(\omega_s/\omega_p) = \log_{10}((10^{A_s/10}-1)/(10^{A_p/10}-1))\)，解得 <span style="font-family:serif;">N</span>。</p>
+<p>通带：<span style="font-family:serif;font-style:italic;">(\omega<sub>p</sub>/\omega<sub>c</sub>)<sup>2N</sup> = 10<sup>A<sub>p</sub>/10</sup> - 1</span>。阻带：<span style="font-family:serif;font-style:italic;">(\omega<sub>s</sub>/\omega<sub>c</sub>)<sup>2N</sup> = 10<sup>A<sub>s</sub>/10</sup> - 1</span>。</p>
+<p>两式相除并取对数：<span style="font-family:serif;font-style:italic;">2N \log<sub>10</sub>(\omega<sub>s</sub>/\omega<sub>p</sub>) = \log<sub>10</sub>((10<sup>A<sub>s</sub>/10</sup>-1)/(10<sup>A<sub>p</sub>/10</sup>-1))</span>，解得 <span style="font-family:serif;">N</span>。</p>
 <h1 id="appN">附录 N：代码风格与规范</h1>
 <ul>
 <li>类名 PascalCase（WaveformGenerator）</li>
@@ -799,7 +815,7 @@ npx vite build</code></pre>
 <h1 id="appO">附录 O：使用 Git 进行版本控制</h1>
 <p>初始化：<code>git init</code>。创建 .gitignore。开发流程：git checkout -b feature/xxx，开发测试后合并到 main。提交格式：第一行主题（50字内），空行后详细描述。</p>
 <h1 id="appP">附录 P：CMake 高级配置</h1>
-<p>set(CMAKE_RUNTIME_OUTPUT_DIRECTORY) 设置输出目录。file(GLOB_RECURSE) 通配符收集源文件。option() 定义开关。生成器表达式 $<CONFIG:Debug> 在配置时求值。</p>
+<p>set(CMAKE<sub>R</sub>UNTIME<sub>O</sub>UTPUT<sub>D</sub>IRECTORY) 设置输出目录。file(GLOB<sub>R</sub>ECURSE) 通配符收集源文件。option() 定义开关。生成器表达式 $<CONFIG:Debug> 在配置时求值。</p>
 <h1 id="appQ">附录 Q：前端 CSS 样式详解</h1>
 <p>色彩系统：#f5f5f7 背景，#ff3b30/#ffcc00/#28cd41 交通灯。毛玻璃：backdrop-filter: saturate(180%) blur(20px)。布局：Flexbox，侧边栏 340px。Slider 自定义样式：-webkit-appearance: none，自定义轨道和手柄。</p>
 <h1 id="appR">附录 R：滤波器的频域和时域特性对比</h1>
@@ -812,25 +828,25 @@ npx vite build</code></pre>
 <tr><td>FIR</td><td>线性相位</td><td>群延迟常数</td></tr>
 </tbody></table>
 <h1 id="appS">附录 S：滤波器设计的实际工程考虑</h1>
-<p>系数量化效应：双精度浮点数影响可忽略。极限环振荡：双精度下 < 10^-15，不可闻。溢出处理：double 范围 ±10^308，完全避免溢出。启动瞬态：reset() 可消除。多速率处理：当前不支持，但为未来打下基础。</p>
+<p>系数量化效应：双精度浮点数影响可忽略。极限环振荡：双精度下 < 10^-15，不可闻。溢出处理：double 范围 ±10<sup>3</sup>08，完全避免溢出。启动瞬态：reset() 可消除。多速率处理：当前不支持，但为未来打下基础。</p>
 <h1 id="appT">附录 T：数学公式的代码实现对照</h1>
 <p><strong>巴特沃斯极点</strong>：公式 pk = ωc*exp(j(π/2+(2k+1)π/(2N)))。代码：angle = Pi*(2*k+1)/(2*n) + Pi/2; poles[k] = exp(complex(0.0, angle));</p>
 <p><strong>切比雪夫 ε</strong>：公式 ε = sqrt(10^(Ap/10)-1)。代码：double eps = std::sqrt(std::pow(10.0, ripple/10.0) - 1.0);</p>
 <p><strong>汉明窗</strong>：公式 w[n]=0.54-0.46cos(2πn/(N-1))。代码：double w = 0.54 - 0.46 * std::cos(TwoPi * i / (n - 1));</p>
-<p><strong>椭圆积分 AGM</strong>：公式 K(k)=π/(2*AGM(1, sqrt(1-k^2)))。代码中 while 循环计算 AGM 直到收敛。</p>
+<p><strong>椭圆积分 AGM</strong>：公式 K(k)=π/(2*AGM(1, sqrt(1-k<sup>2</sup>)))。代码中 while 循环计算 AGM 直到收敛。</p>
 <h1 id="appU">附录 U：故障排除完整指南</h1>
 <h2>U.1 CMake 相关</h2>
 <p><strong>cmake: command not found</strong>：安装 CMake 时未勾选 PATH。解决：修改→重新安装。或手动添加 <code>C:\Program Files\CMake\bin</code> 到系统 PATH。</p>
-<p><strong>CMake Error: generator "MinGW Makefiles" not found</strong>：未安装 MinGW。解决：通过 MSYS2 安装 mingw-w64-ucrt-x86_64-toolchain。</p>
+<p><strong>CMake Error: generator "MinGW Makefiles" not found</strong>：未安装 MinGW。解决：通过 MSYS2 安装 mingw-w64-ucrt-x86<sub>6</sub>4-toolchain。</p>
 <p><strong>CMake Error: The source directory does not exist</strong>：在错误的目录中运行 cmake。解决：确保在 build 目录中运行 <code>cmake ..</code>（上级目录是源目录）。</p>
 <h2>U.2 编译相关</h2>
-<p><strong>stdio.h: No such file or directory</strong>：MinGW 未正确安装。解决：在 MSYS2 中运行 <code>pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain</code>。</p>
+<p><strong>stdio.h: No such file or directory</strong>：MinGW 未正确安装。解决：在 MSYS2 中运行 <code>pacman -S --needed base-devel mingw-w64-ucrt-x86<sub>6</sub>4-toolchain</code>。</p>
 <p><strong>undefined reference to std::cout</strong>：缺少标准库链接。解决：使用 <code>-lstdc++</code> 或设置静态链接 <code>-static-libstdc++</code>。</p>
 <p><strong>multiple definition of ...</strong>：函数在头文件中定义而不是声明。解决：头文件只放声明，实现移到 .cpp 文件。</p>
 <p><strong>expected identifier before numeric constant</strong>：宏命名冲突。解决：检查 #define 是否与变量名冲突，使用更独特的前缀。</p>
 <h2>U.3 链接相关</h2>
 <p><strong>undefined reference to WinMain@16</strong>：入口函数问题。解决：console 应用用 <code>int main()</code>，如需隐藏控制台窗口可用 <code>-mwindows</code> 配合 <code>WinMain</code>。</p>
-<p><strong>undefined reference to mygo_dsp::Engine::instance()</strong>：Engine.cpp 未编译。解决：检查 CMakeLists.txt 是否包含 Engine.cpp。</p>
+<p><strong>undefined reference to mygo<sub>d</sub>sp::Engine::instance()</strong>：Engine.cpp 未编译。解决：检查 CMakeLists.txt 是否包含 Engine.cpp。</p>
 <h2>U.4 运行时</h2>
 <p><strong>0xc000007b</strong>：64/32 位 DLL 混用。解决：确保所有组件均为同一架构。</p>
 <p><strong>Access violation</strong>：空指针或数组越界。解决：检查指针，确保 vector 索引不越界。</p>
@@ -839,8 +855,8 @@ npx vite build</code></pre>
 <h2>U.5 Electron 相关</h2>
 <p><strong>白屏/空白窗口</strong>：Vite 构建失败或路径错误。解决：运行 <code>npx vite build</code>，检查 main.cjs 中的 loadURL 或 loadFile 路径。</p>
 <p><strong>require is not defined</strong>：渲染进程中使用 Node.js API。解决：确保 preload 脚本通过 contextBridge 暴露 API，渲染进程使用 window.* 访问。</p>
-<p><strong>DSP 引擎进程未启动</strong>：引擎路径配置错误。解决：检查 extraResources 中的路径，确保 mygo_dsp_engine.exe 存在。</p>
-<p><strong>npm install 失败</strong>：网络问题或依赖冲突。解决：删除 node_modules 和 package-lock.json，重新 <code>npm install</code>，或配置淘宝镜像。</p>
+<p><strong>DSP 引擎进程未启动</strong>：引擎路径配置错误。解决：检查 extraResources 中的路径，确保 mygo<sub>d</sub>sp<sub>e</sub>ngine.exe 存在。</p>
+<p><strong>npm install 失败</strong>：网络问题或依赖冲突。解决：删除 node<sub>m</sub>odules 和 package-lock.json，重新 <code>npm install</code>，或配置淘宝镜像。</p>
 <h2>U.6 数学/算法</h2>
 <p><strong>滤波器输出 NaN</strong>：IIR 滤波器不稳定（极点在单位圆外）。解决：降低阶数，调整截止频率远离 fs/2，检查系数。</p>
 <p><strong>滤波器输出 Inf</strong>：数值溢出。解决：降低输入幅度或滤波器增益。</p>
@@ -882,20 +898,20 @@ npx vite build</code></pre>
 <p><code>IOperator.h</code> 定义了 DSP 引擎中所有"算子"（Operator）的通用接口。所谓算子，就是接受输入数据、产生输出数据的处理单元。在 MYGO-DSP 中，波形发生器和滤波器都是算子。</p>
 
 <pre><code>#pragma once
-#ifndef IOPERATOR_H
-#define IOPERATOR_H</code></pre>
+#ifndef IOPERATOR<sub>H</sub>
+#define IOPERATOR<sub>H</sub></code></pre>
 <p>第1-3行：<code>#pragma once</code> 和 <code>#ifndef</code>/<code>#define</code> 都是头文件保护宏，防止同一个头文件被多次包含导致编译错误。<code>#pragma once</code> 是编译器指令，告诉编译器"这个文件只包含一次"；<code>#ifndef</code> 是传统的 C/C++ 方式，通过检查宏是否已定义来防止重复包含。我们同时使用两种方式，确保最大的兼容性。</p>
 
 <pre><code>#include &lt;cstddef&gt;</code></pre>
-<p>第6行：包含 <code>&lt;cstddef&gt;</code> 标准库头文件，这个文件定义了 <code>size_t</code> 类型。<code>size_t</code> 是 C++ 中表示"大小"或"长度"的无符号整数类型，在 64 位系统中通常是 64 位无符号整数。使用 <code>size_t</code> 而不是 <code>int</code> 来表示数据长度，是因为 <code>size_t</code> 保证能够表示系统中任何对象的最大尺寸。</p>
+<p>第6行：包含 <code>&lt;cstddef&gt;</code> 标准库头文件，这个文件定义了 <code>size<sub>t</sub></code> 类型。<code>size<sub>t</sub></code> 是 C++ 中表示"大小"或"长度"的无符号整数类型，在 64 位系统中通常是 64 位无符号整数。使用 <code>size<sub>t</sub></code> 而不是 <code>int</code> 来表示数据长度，是因为 <code>size<sub>t</sub></code> 保证能够表示系统中任何对象的最大尺寸。</p>
 
-<pre><code>namespace mygo_dsp {</code></pre>
-<p>第8行：<code>namespace</code>（命名空间）是 C++ 中组织代码的机制，避免不同代码库中的同名标识符冲突。我们把所有的 DSP 代码放在 <code>mygo_dsp</code> 命名空间中。例如如果另一个库也有一个叫 <code>IOperator</code> 的类，使用命名空间就可以通过 <code>mygo_dsp::IOperator</code> 和 <code>other_lib::IOperator</code> 来区分。</p>
+<pre><code>namespace mygo<sub>d</sub>sp {</code></pre>
+<p>第8行：<code>namespace</code>（命名空间）是 C++ 中组织代码的机制，避免不同代码库中的同名标识符冲突。我们把所有的 DSP 代码放在 <code>mygo<sub>d</sub>sp</code> 命名空间中。例如如果另一个库也有一个叫 <code>IOperator</code> 的类，使用命名空间就可以通过 <code>mygo<sub>d</sub>sp::IOperator</code> 和 <code>other<sub>l</sub>ib::IOperator</code> 来区分。</p>
 
 <pre><code>class IOperator {
 public:
     virtual ~IOperator() = default;
-    virtual void process(const double* input, double* output, size_t numSamples) = 0;
+    virtual void process(const double* input, double* output, size<sub>t</sub> numSamples) = 0;
     virtual void reset() = 0;
     virtual bool isBypassed() const = 0;
     virtual void setBypass(bool bypass) = 0;
@@ -913,21 +929,21 @@ public:
 <h2 id="app-w-2">W.2 DSPMath.h 逐行解释</h2>
 
 <pre><code>#pragma once
-#ifndef DSPMATH_H
-#define DSPMATH_H
+#ifndef DSPMATH<sub>H</sub>
+#define DSPMATH<sub>H</sub>
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
+#ifndef M<sub>P</sub>I
+#define M<sub>P</sub>I 3.14159265358979323846
 #endif
 
-namespace mygo_dsp {
-constexpr double Pi = M_PI;
-constexpr double TwoPi = 2.0 * M_PI;
+namespace mygo<sub>d</sub>sp {
+constexpr double Pi = M<sub>P</sub>I;
+constexpr double TwoPi = 2.0 * M<sub>P</sub>I;
 }
 
 #endif</code></pre>
 
-<p>这个文件定义了 DSP 计算中常用的数学常量。<code>M_PI</code> 是圆周率 &pi; 的近似值。不同编译器对 <code>M_PI</code> 的支持不同——MSVC 默认不定义 <code>M_PI</code>，所以我们需要自己定义。<code>#ifndef M_PI</code> 检查宏是否已经定义过，如果没有定义才定义，避免重定义错误。</p>
+<p>这个文件定义了 DSP 计算中常用的数学常量。<code>M<sub>P</sub>I</code> 是圆周率 &pi; 的近似值。不同编译器对 <code>M<sub>P</sub>I</code> 的支持不同——MSVC 默认不定义 <code>M<sub>P</sub>I</code>，所以我们需要自己定义。<code>#ifndef M<sub>P</sub>I</code> 检查宏是否已经定义过，如果没有定义才定义，避免重定义错误。</p>
 
 <p><code>constexpr</code> 是 C++11 引入的关键字，表示"编译时常量"。用 <code>constexpr</code> 定义的变量在编译期就确定了值，不会有运行时的计算开销。<code>Pi</code> 和 <code>TwoPi</code> 就是为方便计算而定义的常量。为什么使用 <code>constexpr double</code> 而不是 <code>#define</code>？因为 <code>constexpr</code> 变量有类型和作用域，更加安全。</p>
 
@@ -936,13 +952,13 @@ constexpr double TwoPi = 2.0 * M_PI;
 <pre><code>class WaveformGenerator : public IOperator {</code></pre>
 <p>这行代码声明 <code>WaveformGenerator</code> 类继承自 <code>IOperator</code>。冒号后的 <code>public IOperator</code> 表示公有继承——<code>IOperator</code> 的所有公有成员在 <code>WaveformGenerator</code> 中仍然是公有的。</p>
 
-<pre><code>    void process(const double* input, double* output, size_t numSamples) override;</code></pre>
+<pre><code>    void process(const double* input, double* output, size<sub>t</sub> numSamples) override;</code></pre>
 <p><code>override</code> 关键字（C++11）告诉编译器这个函数是覆写（override）基类的虚函数。如果基类没有同名的虚函数，或者函数签名不匹配，编译器会报错。这是一个很好的安全机制，可以避免拼写错误导致意外重载。</p>
 
 <pre><code>    double generateSample(double t) const;</code></pre>
 <p><code>generateSample</code> 是一个私有辅助函数，给定归一化时间 <code>t</code>（0 到 1），返回该时刻的采样值。声明末尾的 <code>const</code> 表示这个函数不会修改成员变量，是一种"只读"承诺。这有助于编译器优化和代码理解。</p>
 
-<pre><code>    mutable std::mt19937_64 rng_;
+<pre><code>    mutable std::mt19937<sub>6</sub>4 rng_;
     mutable double pinkB0_, pinkB1_, pinkB2_, pinkB3_, pinkB4_, pinkB5_, pinkB6_;
     mutable int pinkState_;</code></pre>
 <p><code>mutable</code> 关键字允许在 <code>const</code> 成员函数中修改这些变量。<code>generateSample</code> 函数是 <code>const</code> 的，但它需要更新随机数生成器的状态（每次调用产生不同的随机数）和粉红噪声滤波器的历史状态。<code>mutable</code> 就是在 <code>const</code> 函数中"开一个后门"，允许修改这些特定字段。严谨地说这不是完美的设计，但在实践中完全可接受。</p>
@@ -975,7 +991,7 @@ constexpr double TwoPi = 2.0 * M_PI;
 <p>第二次 switch 应用窗函数。先设计理想滤波器系数然后加窗，最后再次归一化。为什么有两次归一化？第一次归一化是让理想滤波器增益为 1，但窗函数会改变系数之和，所以加窗后需要再次归一化。</p>
 
 <pre><code>void FIRFilter::designLowPass() {
-    int n = static_cast&lt;int&gt;(taps_.size());
+    int n = static<sub>c</sub>ast&lt;int&gt;(taps_.size());
     int M = n / 2;
     double fc = params_.cutoff / params_.sampleRate;
     for (int i = 0; i &lt; n; ++i) {
@@ -987,7 +1003,7 @@ constexpr double TwoPi = 2.0 * M_PI;
         }
     }
 }</code></pre>
-<p>这段代码实现理想低通滤波器的脉冲响应。公式为 \(h[n] = \frac{\sin(\omega_c n)}{\pi n}\)，其中 \(\omega_c = 2\pi f_c/f_s\) 是归一化截止角频率。当 <span style="font-family:serif;">k = 0</span> 时，公式出现 0/0 的不定式，但实际上 \(\lim_{x\to 0} \sin(x)/x = 1\)，所以 <span style="font-family:serif;">h[M] = 2f_c/f_s</span>。</p>
+<p>这段代码实现理想低通滤波器的脉冲响应。公式为 <span style="font-family:serif;font-style:italic;">h[n] = <sup>\sin(\omega<sub>c</sub> n)</sup>⁄<sub>\pi n</sub></span>，其中 <span style="font-family:serif;font-style:italic;">\omega<sub>c</sub> = 2\pi f<sub>c</sub>/f<sub>s</sub></span> 是归一化截止角频率。当 <span style="font-family:serif;">k = 0</span> 时，公式出现 0/0 的不定式，但实际上 <span style="font-family:serif;font-style:italic;">\lim<sub>x\to 0</sub> \sin(x)/x = 1</span>，所以 <span style="font-family:serif;">h[M] = 2f<sub>c</sub>/f<sub>s</sub></span>。</p>
 
 <p><code>FIRFilter::process</code> 使用直接型结构实现卷积。它维护一个环形缓冲区（delayLine），每次输入新的样本时，将它放入缓冲区，然后计算所有系数与对应延迟样本的乘积累加和。环形缓冲区的优势是避免了每次处理时移动数据的高昂开销。</p>
 
@@ -1000,24 +1016,24 @@ constexpr double TwoPi = 2.0 * M_PI;
         poles[k] = std::exp(std::complex&lt;double&gt;(0.0, angle));
     }
 }</code></pre>
-<p>巴特沃斯滤波器的极点等角度分布在 s 平面左半平面的单位圆上。角度公式 \(\theta_k = \frac{\pi}{2} + \frac{(2k+1)\pi}{2N}\) 确保所有极点都在左半平面（实部小于 0），保证模拟滤波器的稳定性。<span style="font-family:serif;">k</span> 从 0 到 <span style="font-family:serif;">N-1</span>，共 N 个极点。</p>
+<p>巴特沃斯滤波器的极点等角度分布在 s 平面左半平面的单位圆上。角度公式 <span style="font-family:serif;font-style:italic;">\theta<sub>k</sub> = <sup>\pi</sup>⁄<sub>2</sub> + <sup>(2k+1)\pi</sup>⁄<sub>2N</sub></span> 确保所有极点都在左半平面（实部小于 0），保证模拟滤波器的稳定性。<span style="font-family:serif;">k</span> 从 0 到 <span style="font-family:serif;">N-1</span>，共 N 个极点。</p>
 
 <p>注意：这些是模拟域（s 平面）的极点。后面通过双线性变换将它们映射到数字域（z 平面）。双线性变换的公式为：</p>
-<p>\[
-s = \frac{2}{T} \cdot \frac{1 - z^{-1}}{1 + z^{-1}}
-\]</p>
+<p><div style="text-align:center;margin:0.8em 0;font-family:serif;font-style:italic;font-size:1.05em;">
+s = <sup>2</sup>⁄<sub>T</sub> \cdot <sup>1 - z<sup>-1</sup></sup>⁄<sub>1 + z<sup>-1</sup></sub>
+</div></p>
 <p>变换后，我们需要检查所有数字极点是否在单位圆内（稳定性条件）。如果某个极点落在单位圆外，滤波器就不稳定，需要调整设计参数。</p>
 
-<pre><code>void IIRFilter::process(const double* input, double* output, size_t numSamples) {
+<pre><code>void IIRFilter::process(const double* input, double* output, size<sub>t</sub> numSamples) {
     if (bypass_) {
         if (input != output) {
             std::copy(input, input + numSamples, output);
         }
         return;
     }
-    for (size_t i = 0; i &lt; numSamples; ++i) {
+    for (size<sub>t</sub> i = 0; i &lt; numSamples; ++i) {
         double x = input[i];
-        for (size_t j = 0; j &lt; numBiquads; ++j) {
+        for (size<sub>t</sub> j = 0; j &lt; numBiquads; ++j) {
             double y = c.b0 * x + c.b1 * s.x1 + c.b2 * s.x2
                        - c.a1 * s.y1 - c.a2 * s.y2;
             s.x2 = s.x1; s.x1 = x;
@@ -1029,7 +1045,7 @@ s = \frac{2}{T} \cdot \frac{1 - z^{-1}}{1 + z^{-1}}
 }</code></pre>
 <p>这是 IIR 滤波器的核心处理代码。采用直接 II 型转置结构实现双二阶节。每个双二阶节的计算公式为：</p>
 <p><div style="text-align:center;margin:0.5em 0;font-family:serif;">
-y[n] = b_0 x[n] + b_1 x[n-1] + b_2 x[n-2] - a_1 y[n-1] - a_2 y[n-2]
+y[n] = b<sub>0</sub> x[n] + b<sub>1</sub> x[n-1] + b<sub>2</sub> x[n-2] - a<sub>1</sub> y[n-1] - a<sub>2</sub> y[n-2]
 </div></p>
 <p>多个双二阶节级联时，前一个的输出是后一个的输入。这种级联结构对数值稳定性至关重要——如果直接实现一个高阶 IIR 滤波器，系数的量化误差会被急剧放大，可能导致滤波器不稳定或频率响应严重偏离设计值。通过分解为双二阶节，每个节的系数都在可控范围内，误差不会传播和放大。</p>
 
@@ -1038,18 +1054,18 @@ y[n] = b_0 x[n] + b_1 x[n-1] + b_2 x[n-2] - a_1 y[n-1] - a_2 y[n-2]
 <h2 id="app-w-6">W.6 Engine.cpp 逐行解释</h2>
 
 <pre><code>const std::vector&lt;double&gt;&amp; Engine::processAudio() {
-    std::lock_guard&lt;std::mutex&gt; lock(mutex_);
+    std::lock<sub>g</sub>uard&lt;std::mutex&gt; lock(mutex_);
     std::fill(outputBuffer_.begin(), outputBuffer_.end(), 0.0);</code></pre>
-<p>第一行使用 <code>std::lock_guard</code> 加锁互斥量。这个结构体在构造时自动调用 <code>mutex_.lock()</code>，在析构时自动调用 <code>mutex_.unlock()</code>。即使函数中途抛出异常，<code>lock_guard</code> 的析构函数也会被执行，锁一定会被释放。这就是 RAII 思想的体现——资源（锁）的获取和释放与对象的生命周期绑定。</p>
+<p>第一行使用 <code>std::lock<sub>g</sub>uard</code> 加锁互斥量。这个结构体在构造时自动调用 <code>mutex_.lock()</code>，在析构时自动调用 <code>mutex_.unlock()</code>。即使函数中途抛出异常，<code>lock<sub>g</sub>uard</code> 的析构函数也会被执行，锁一定会被释放。这就是 RAII 思想的体现——资源（锁）的获取和释放与对象的生命周期绑定。</p>
 
 <pre><code>    std::fill(tempBuffer_.begin(), tempBuffer_.end(), 0.0);
     for (auto&amp; [id, wave] : waves_) {
         wave-&gt;process(nullptr, tempBuffer2_.data(), bufferSize_);
-        for (size_t i = 0; i &lt; bufferSize_; ++i) {
+        for (size<sub>t</sub> i = 0; i &lt; bufferSize_; ++i) {
             tempBuffer_[i] += tempBuffer2_[i];
         }
     }</code></pre>
-<p>C++17 的范围基 for 循环（range-based for loop）和结构化绑定（structured binding）。<code>auto&amp; [id, wave] : waves_</code> 自动解包 <code>std::pair&lt;int, unique_ptr&lt;WaveformGenerator&gt;&gt;</code> 为 id 和 wave 两个变量。每个波形发生器生成一帧数据到 tempBuffer2，然后累加到 tempBuffer。这样就实现了多个波形的实时混合。</p>
+<p>C++17 的范围基 for 循环（range-based for loop）和结构化绑定（structured binding）。<code>auto&amp; [id, wave] : waves_</code> 自动解包 <code>std::pair&lt;int, unique<sub>p</sub>tr&lt;WaveformGenerator&gt;&gt;</code> 为 id 和 wave 两个变量。每个波形发生器生成一帧数据到 tempBuffer2，然后累加到 tempBuffer。这样就实现了多个波形的实时混合。</p>
 
 <pre><code>    for (auto&amp; [id, filter] : filters_) {
         filter-&gt;process(currentInput, outputBuffer_.data(), bufferSize_);
@@ -1062,7 +1078,7 @@ y[n] = b_0 x[n] + b_1 x[n-1] + b_2 x[n-2] - a_1 y[n-1] - a_2 y[n-2]
 <h2 id="app-w-7">W.7 main.cpp 逐行解释</h2>
 
 <pre><code>int main() {
-    auto&amp; engine = mygo_dsp::Engine::instance();
+    auto&amp; engine = mygo<sub>d</sub>sp::Engine::instance();
     engine.init(44100.0, 512);</code></pre>
 <p><code>main</code> 函数是程序的入口点。第一行获取 Engine 的单例实例。第二行初始化引擎，设置默认采样率 44100Hz 和缓冲区大小 512。但注意，前端的 App.tsx 中初始化时传的是 <code>init(44100, 128)</code>，会覆盖这里的设置。所以这里的 init 调用更像是一个安全默认值。</p>
 
@@ -1077,17 +1093,17 @@ y[n] = b_0 x[n] + b_1 x[n-1] + b_2 x[n-2] - a_1 y[n-1] - a_2 y[n-2]
 
 <pre><code>        if (reqId.empty()) {
             double numId = extractNumber(line, "id", -1);
-            if (numId >= 0) reqId = std::to_string(static_cast&lt;int&gt;(numId));
+            if (numId >= 0) reqId = std::to<sub>s</sub>tring(static<sub>c</sub>ast&lt;int&gt;(numId));
             else reqId = cmd;
         }</code></pre>
 <p>这段代码处理 id 字段。JSON 规范中 id 可以是数字（如 <code>{"id": 1}</code>），但我们的 <code>extractString</code> 函数只提取带引号的字符串值。所以如果 id 是数字，<code>extractString</code> 返回空字符串。这时我们尝试用 <code>extractNumber</code> 提取数字，如果提取成功则转为字符串。如果都提取失败（极端情况），就用命令名称作为 id。</p>
 
 <pre><code>        else if (cmd == "addWave") {
-            mygo_dsp::WaveformParams p;
-            p.type = static_cast&lt;mygo_dsp::WaveformType&gt;(extractInt(line, "type", 0));
+            mygo<sub>d</sub>sp::WaveformParams p;
+            p.type = static<sub>c</sub>ast&lt;mygo<sub>d</sub>sp::WaveformType&gt;(extractInt(line, "type", 0));
             ...
             int id = engine.addWave(p);
-            writeLine(response(reqId, "ok", std::to_string(id)));
+            writeLine(response(reqId, "ok", std::to<sub>s</sub>tring(id)));
         }</code></pre>
 <p>这是 <code>addWave</code> 命令的处理代码。从 JSON 中逐个提取参数，构造 <code>WaveformParams</code> 结构体，调用引擎添加波形，然后返回引擎分配的波形 ID。每个参数都有默认值（如 type 默认为 0），即使前端漏发了某个字段，程序也不会崩溃。</p>
 
@@ -1104,7 +1120,7 @@ y[n] = b_0 x[n] + b_1 x[n-1] + b_2 x[n-2] - a_1 y[n-1] - a_2 y[n-2]
 
 <pre><code>const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const { spawn } = require('child_process');
+const { spawn } = require('child<sub>p</sub>rocess');
 const readline = require('readline');</code></pre>
 <p>前四行引入 Electron 和相关 Node.js 内置模块。<code>app</code> 控制应用生命周期，<code>BrowserWindow</code> 创建窗口，<code>ipcMain</code> 处理进程间通信，<code>spawn</code> 启动子进程，<code>readline</code> 按行读取数据。</p>
 
@@ -1114,8 +1130,8 @@ const readline = require('readline');</code></pre>
 
 <pre><code>function startDspProcess() {
     const exePath = isProd
-        ? path.join(process.resourcesPath, 'dsp', 'mygo_dsp_engine.exe')
-        : path.join(__dirname, '..', '..', 'dsp-core', 'build', 'mygo_dsp_engine.exe');
+        ? path.join(process.resourcesPath, 'dsp', 'mygo<sub>d</sub>sp<sub>e</sub>ngine.exe')
+        : path.join(_<sub>d</sub>irname, '..', '..', 'dsp-core', 'build', 'mygo<sub>d</sub>sp<sub>e</sub>ngine.exe');
     dspProcess = spawn(exePath, [], {
         stdio: ['pipe', 'pipe', 'pipe'],
         windowsHide: true,
@@ -1177,13 +1193,13 @@ const readline = require('readline');</code></pre>
         titleBarStyle: 'hidden',
         backgroundColor: '#1a1a2e',
         webPreferences: {
-            preload: path.join(__dirname, 'preload.cjs'),
+            preload: path.join(_<sub>d</sub>irname, 'preload.cjs'),
             nodeIntegration: false,
             contextIsolation: true,
         },
     });
     mainWindow.setMenuBarVisibility(false);
-    mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
+    mainWindow.loadFile(path.join(_<sub>d</sub>irname, '../dist/index.html'));
 }</code></pre>
 <p><code>BrowserWindow</code> 构造函数创建一个新的浏览器窗口。各选项的含义：</p>
 <ul>
@@ -1317,7 +1333,7 @@ Engine pipeline (wave+filter, 100000 iterations): 4179.27 ms (41.79 us/call)</co
 
 <h2 id="app-y-4">Y.4 DSP 理论与实验结果对比</h2>
 
-<p>根据测试报告（TEST_REPORT.md），以下是 DSP 理论与实际结果的对比验证：</p>
+<p>根据测试报告（TEST<sub>R</sub>EPORT.md），以下是 DSP 理论与实际结果的对比验证：</p>
 
 <p>1. 500Hz 低通滤波：250Hz 正弦波正常通过，2000Hz 方波谐波被抑制。输出为光滑正弦波形。✅</p>
 
@@ -1332,8 +1348,13 @@ Engine pipeline (wave+filter, 100000 iterations): 4179.27 ms (41.79 us/call)</co
 MYGO-DSP v2.0 &mdash; 2026年5月<br />
 数字信号处理与滤波器设计平台
 </p>
+
+
 </body>
 </html>
+
+
+
 
 
 
