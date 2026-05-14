@@ -36,6 +36,8 @@ public:
     bool getFilterPoleZero(int id,
         std::vector<std::complex<double>>& poles,
         std::vector<std::complex<double>>& zeros) const;
+    bool getFilterZeros(int id,
+        std::vector<std::complex<double>>& zeros) const;
 
     Engine(const Engine&) = delete;
     Engine& operator=(const Engine&) = delete;

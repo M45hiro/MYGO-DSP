@@ -25,7 +25,7 @@ export interface DSPApi {
   addFilterFIR(params: FIRParams): Promise<number>;
   addFilterIIR(params: IIRParams): Promise<number>;
   removeFilter(id: number): Promise<void>;
-  updateFilter(id: number, params: Partial<FIRParams | IIRParams>): Promise<void>;
+  updateFilter(id: number, params: Partial<FIRParams | IIRParams>, type?: string): Promise<void>;
   setBypass(id: number, bypass: boolean): Promise<void>;
   process(): Promise<Float64Array>;
   getCounts(): Promise<{waves: number, filters: number}>;

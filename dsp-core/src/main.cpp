@@ -172,8 +172,8 @@ int main() {
 
         else if (cmd == "updateFilter") {
             int id = extractInt(line, "fid");
-            std::string protoStr = extractString(line, "prototype");
-            if (!protoStr.empty()) {
+            int isIIRorFIR = extractInt(line, "isIIR", 0);
+            if (isIIRorFIR == 1) {
                 mygo_dsp::IIRFilterParams p;
                 p.prototype = static_cast<mygo_dsp::IIRPrototype>(extractInt(line, "prototype", 0));
                 p.passType = static_cast<mygo_dsp::IIRPassType>(extractInt(line, "passType", 0));
@@ -258,22 +258,21 @@ int main() {
         else if (cmd == "getPoleZero") {
             int fid = extractInt(line, "fid");
             std::vector<std::complex<double>> poles, zeros;
+            auto fmtComplex = [](const std::complex<double>& c) {
+                return "{\"real\":" + std::to_string(c.real()) + ",\"imag\":" + std::to_string(c.imag()) + "}";
+            };
+            auto arrToJson = [&](const std::vector<std::complex<double>>& v) {
+                std::string s = "[";
+                for (size_t i = 0; i < v.size(); ++i) {
+                    if (i > 0) s += ",";
+                    s += fmtComplex(v[i]);
+                }
+                return s + "]";
+            };
             if (engine.getFilterPoleZero(fid, poles, zeros)) {
-                auto fmtComplex = [](const std::complex<double>& c) {
-                    return "{\"real\":" + std::to_string(c.real()) + ",\"imag\":" + std::to_string(c.imag()) + "}";
-                };
-                std::string arrP = "[", arrZ = "[";
-                for (size_t i = 0; i < poles.size(); ++i) {
-                    if (i > 0) arrP += ",";
-                    arrP += fmtComplex(poles[i]);
-                }
-                arrP += "]";
-                for (size_t i = 0; i < zeros.size(); ++i) {
-                    if (i > 0) arrZ += ",";
-                    arrZ += fmtComplex(zeros[i]);
-                }
-                arrZ += "]";
-                writeLine(response(reqId, "ok", "{\"poles\":" + arrP + ",\"zeros\":" + arrZ + "}"));
+                writeLine(response(reqId, "ok", "{\"poles\":" + arrToJson(poles) + ",\"zeros\":" + arrToJson(zeros) + "}"));
+            } else if (engine.getFilterZeros(fid, zeros)) {
+                writeLine(response(reqId, "ok", "{\"poles\":[],\"zeros\":" + arrToJson(zeros) + "}"));
             } else {
                 writeLine(response(reqId, "ok", "{\"poles\":[],\"zeros\":[]}"));
             }

@@ -18,16 +18,30 @@ const App: React.FC = () => {
   const processRef = useRef<number | null>(null);
   const [poles, setPoles] = useState<{real:number,imag:number}[]>([]);
   const [zeros, setZeros] = useState<{real:number,imag:number}[]>([]);
+  const [refreshPZ, setRefreshPZ] = useState(0);
 
-  const updatePoleZero = useCallback(async () => {
-    if (!window.dsp || filters.length === 0) return;
-    const iirFilter = filters.find(f => f.type === 'IIR' && !f.bypass);
-    if (!iirFilter) return;
-    try {
-      const result = await window.dsp.getPoleZero(iirFilter.id);
-      if (result) { setPoles(result.poles || []); setZeros(result.zeros || []); }
-    } catch {}
-  }, [filters]);
+  const triggerRefreshPZ = useCallback(() => setRefreshPZ(n => n + 1), []);
+
+  useEffect(() => {
+    if (!window.dsp || filters.length === 0) { setPoles([]); setZeros([]); return; }
+    let allPoles: {real:number,imag:number}[] = [];
+    let allZeros: {real:number,imag:number}[] = [];
+    let pending = filters.length;
+    let done = 0;
+    filters.forEach(f => {
+      window.dsp.getPoleZero(f.id).then(r => {
+        if (r) {
+          if (r.poles) allPoles = allPoles.concat(r.poles);
+          if (r.zeros) allZeros = allZeros.concat(r.zeros);
+        }
+        done++;
+        if (done === pending) { setPoles(allPoles); setZeros(allZeros); }
+      }).catch(() => {
+        done++;
+        if (done === pending) { setPoles(allPoles); setZeros(allZeros); }
+      });
+    });
+  }, [filters, refreshPZ]);
 
   useEffect(() => {
     if (!initialized && window.dsp) {
@@ -57,8 +71,6 @@ const App: React.FC = () => {
     };
   }, [isPlaying, processLoop]);
 
-  useEffect(() => { updatePoleZero(); }, [filters]);
-
   const togglePlay = () => setIsPlaying(!isPlaying);
 
   return (
@@ -85,7 +97,7 @@ const App: React.FC = () => {
         <div className="mac-sidebar" style={{ width: 250, display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
           <ControlPanel
             waves={waves} filters={filters} isPlaying={isPlaying}
-            onWavesChange={setWaves} onFiltersChange={setFilters}
+            onWavesChange={setWaves} onFiltersChange={(f: any) => { setFilters(f); triggerRefreshPZ(); }}
             onPlayToggle={togglePlay}
           />
         </div>

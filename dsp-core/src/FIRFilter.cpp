@@ -1,6 +1,7 @@
 #include "FIRFilter.h"
 #include <algorithm>
 #include <cstring>
+#include <complex>
 
 namespace mygo_dsp {
 
@@ -203,6 +204,33 @@ void FIRFilter::process(const double* input, double* output, size_t numSamples) 
         }
         output[i] = sum;
         delayIndex_ = (delayIndex_ + 1) % n;
+    }
+}
+
+void FIRFilter::getZeros(std::vector<std::complex<double>>& zeros) const {
+    zeros.clear();
+    if (taps_.empty()) return;
+    int order = static_cast<int>(taps_.size()) - 1;
+    if (order < 1) return;
+    std::vector<std::complex<double>> coeffs(order + 1);
+    for (int i = 0; i <= order; ++i) coeffs[i] = taps_[i];
+    for (int i = 0; i < order; ++i) {
+        if (std::abs(coeffs[i]) < 1e-15 && i + 1 < order) continue;
+        std::complex<double> x(0.0, 0.0);
+        for (int iter = 0; iter < 200; ++iter) {
+            std::complex<double> f = coeffs[order];
+            std::complex<double> df(0.0, 0.0);
+            for (int k = order - 1; k >= 0; --k) {
+                df = f + x * df;
+                f = coeffs[k] + x * f;
+            }
+            if (std::abs(df) < 1e-15) break;
+            x -= f / df;
+        }
+        zeros.push_back(x);
+        for (int k = order - 1; k >= 0; --k)
+            coeffs[k + 1] += x * coeffs[k];
+        --order;
     }
 }
 

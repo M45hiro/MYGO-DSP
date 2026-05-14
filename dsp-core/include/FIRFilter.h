@@ -7,6 +7,7 @@
 #include <vector>
 #include <cmath>
 #include <functional>
+#include <complex>
 
 namespace mygo_dsp {
 
@@ -48,6 +49,7 @@ public:
 
     void design(const FIRFilterParams& params);
     FIRFilterParams getParams() const;
+    void getZeros(std::vector<std::complex<double>>& zeros) const;
 
     int getId() const;
     void setId(int id);

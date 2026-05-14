@@ -142,8 +142,8 @@ app.whenReady().then(() => {
     return sendCommand('removeFilter', { fid });
   });
 
-  ipcMain.handle('updateFilter', async (_event, fid, params) => {
-    return sendCommand('updateFilter', { fid, ...params });
+  ipcMain.handle('updateFilter', async (_event, fid, params, filterType) => {
+    return sendCommand('updateFilter', { fid, ...params, isIIR: filterType === 'IIR' ? 1 : 0 });
   });
 
   ipcMain.handle('setBypass', async (_event, bid, bypass) => {

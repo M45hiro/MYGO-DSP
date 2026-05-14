@@ -8,7 +8,7 @@ contextBridge.exposeInMainWorld('dsp', {
   addFilterFIR: (params) => ipcRenderer.invoke('addFilterFIR', params),
   addFilterIIR: (params) => ipcRenderer.invoke('addFilterIIR', params),
   removeFilter: (id) => ipcRenderer.invoke('removeFilter', id),
-  updateFilter: (id, params) => ipcRenderer.invoke('updateFilter', id, params),
+  updateFilter: (id, params, type) => ipcRenderer.invoke('updateFilter', id, params, type),
   setBypass: (id, bypass) => ipcRenderer.invoke('setBypass', id, bypass),
   process: async () => {
     const result = await ipcRenderer.invoke('process');

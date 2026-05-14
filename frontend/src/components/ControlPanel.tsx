@@ -119,7 +119,7 @@ const ControlPanel: React.FC<Props> = ({ waves, filters, isPlaying, onWavesChang
     if (!filter) return;
     const newParams = { ...filter.params, ...partial } as FIRParams | IIRParams;
     onFiltersChange(filters.map(f => f.id === id ? { ...f, params: newParams } : f));
-    try { await window.dsp.updateFilter(id, newParams); } catch {}
+    try { await window.dsp.updateFilter(id, newParams, filter.type); } catch {}
   };
 
   const toggleBypass = (id: number, bypass: boolean) => {

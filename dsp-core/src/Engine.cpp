@@ -154,6 +154,17 @@ int Engine::getFilterCount() const {
     return static_cast<int>(filters_.size());
 }
 
+bool Engine::getFilterZeros(int id,
+    std::vector<std::complex<double>>& zeros) const {
+    std::lock_guard<std::mutex> lock(mutex_);
+    auto it = filters_.find(id);
+    if (it == filters_.end()) return false;
+    auto* fir = dynamic_cast<FIRFilter*>(it->second.get());
+    if (!fir) return false;
+    fir->getZeros(zeros);
+    return true;
+}
+
 bool Engine::getFilterPoleZero(int id,
     std::vector<std::complex<double>>& poles,
     std::vector<std::complex<double>>& zeros) const {
