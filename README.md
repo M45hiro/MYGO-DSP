@@ -12,12 +12,12 @@
 </div>
 
 <div align="center">
-  <a href="#english">🇬🇧 English</a> | <a href="#cn">🇨🇳 中文</a>
+  <a href="#chinese-section">🇨🇳 中文</a> | <a href="#english">🇬🇧 English</a>
 </div>
 
 ---
 
-## English
+## English / English
 
 ### 📷 Screenshots
 
@@ -117,7 +117,7 @@ MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
-## 中文 {#cn}
+## Chinese Section
 
 ### 📷 界面预览
 
@@ -220,7 +220,7 @@ MIT License。详情见 [LICENSE](LICENSE)。
 ---
 
 <div align="center">
-  <a href="#english">🇬🇧 English</a> | <a href="#cn">🇨🇳 中文</a>
+  <a href="#chinese-section">🇨🇳 中文</a> | <a href="#english">🇬🇧 English</a>
   <br><br>
   <sub>Copyright © 2026 M45hiro. MIT License.</sub>
 </div>
