@@ -11,6 +11,12 @@
 
 ## 中文 / Chinese
 
+### 📷 界面预览 / Screenshots
+
+| 时域波形 / Time Domain | 频谱图 / Spectrum | 零极点图 / Pole-Zero |
+|---|---|---|
+| ![waveform](screenshots/waveform.png) | ![spectrum](screenshots/spectrum.png) | ![polezero](screenshots/polezero.png) |
+
 ### 📌 项目简介
 
 MYGO-DSP 是一个基于 C++17 + Electron + React 的企业级数字信号处理与滤波器设计平台。支持波形生成、FIR/IIR 滤波、实时频谱分析、智能滤波器设计等功能。
@@ -106,6 +112,12 @@ MIT License
 ---
 
 ## English / English
+
+### 📷 Screenshots
+
+| Time Domain | Spectrum | Pole-Zero |
+|---|---|---|
+| ![waveform](screenshots/waveform.png) | ![spectrum](screenshots/spectrum.png) | ![polezero](screenshots/polezero.png) |
 
 ### 📌 Overview
 
