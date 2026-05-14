@@ -1,0 +1,45 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono&display=swap');
+:root {
+  --body-font: 'Noto Serif SC', 'Source Han Serif SC', Georgia, serif;
+  --sans-font: 'Noto Sans SC', 'Source Han Sans SC', -apple-system, sans-serif;
+  --mono-font: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  --bg: #fafaf8;
+  --text: #1a1a1a;
+  --accent: #8b0000;
+  --secondary: #666;
+  --border: #ddd;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: var(--body-font);
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--text);
+  background: var(--bg);
+  max-width: 210mm;
+  margin: 0 auto;
+  padding: 20mm 25mm;
+  text-align: justify;
+}
+h1, h2, h3, h4 { font-family: var(--sans-font); font-weight: 700; margin-top: 2em; margin-bottom: 0.8em; }
+h1 { font-size: 28px; text-align: center; margin-top: 1em; }
+h2 { font-size: 20px; border-bottom: 2px solid var(--accent); padding-bottom: 6px; }
+h3 { font-size: 16px; }
+p { margin: 0.8em 0; text-indent: 2em; }
+code { font-family: var(--mono-font); font-size: 13px; background: #f0f0f0; padding: 1px 4px; border-radius: 3px; }
+pre { font-family: var(--mono-font); font-size: 12px; background: #f5f5f5; padding: 12px; border-radius: 6px; overflow-x: auto; border: 1px solid #e8e8e8; line-height: 1.5; margin: 1em 0; }
+pre code { background: none; padding: 0; }
+.MathJax { font-size: 110% !important; }
+table { width: 100%; border-collapse: collapse; margin: 1em 0; font-size: 13px; }
+th, td { padding: 8px 12px; border: 1px solid var(--border); text-align: left; }
+th { background: #f0f0f0; font-family: var(--sans-font); font-weight: 600; }
+tr:nth-child(even) { background: #fafafa; }
+@media print {
+  @page { margin: 20mm 25mm; size: A4; }
+  body { padding: 0; background: white; }
+  a { color: inherit; text-decoration: none; }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2 { page-break-after: avoid; }
+  pre, table { page-break-inside: avoid; }
+}

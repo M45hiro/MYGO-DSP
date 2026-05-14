@@ -1,0 +1,20 @@
+{
+  "name": "mygo-dsp",
+  "version": "1.0.0",
+  "description": "MYGO DSP native addon - waveform generation, FIR, IIR filtering",
+  "main": "index.js",
+  "scripts": {
+    "install": "node-gyp rebuild",
+    "build": "node-gyp rebuild",
+    "test": "node test.js"
+  },
+  "gypfile": true,
+  "dependencies": {
+    "koffi": "^2.16.2",
+    "node-addon-api": "^7.1.1"
+  },
+  "devDependencies": {
+    "cmake-js": "^8.0.0",
+    "node-gyp": "^10.3.1"
+  }
+}

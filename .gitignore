@@ -1,0 +1,31 @@
+# Build
+dsp-core/build/
+!dsp-core/build/.gitkeep
+
+# Dependencies
+frontend/node_modules/
+
+# Build output
+frontend/dist/
+frontend/release/
+frontend/MYGO-DSP.asar
+frontend/build_app/
+
+# Report generated files
+report/*.pdf
+
+# IDE
+.vscode/
+.history/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp files
+temp_*/
+*.log
+stdin
+
+# macOS wallpapers (not project code)
+frontend/public/wallpapers/
